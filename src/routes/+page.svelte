@@ -85,6 +85,8 @@
   <p>Not uploaded yet</p>
 {/if}
 
+<!-- TODO: create configuration widget (see PDS_WWW.md) -->
+<!-- TODO: create upload widget (like on imglink.io) -->
 <div>
   <input type="file" multiple id="fileInput" bind:files />
   <button type="button" onclick={upload_files} disabled={!files}>Upload</button>

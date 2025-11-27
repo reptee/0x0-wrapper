@@ -2,19 +2,22 @@
 
 ### Strona główna (upload)
 
+- settings panel
+  - expiry date
+  - `-FSecret`
+  - 0x0 provider (list of known + custom)
+  - option to compress files into encrypted zip archive
 - Upon sending
   - record token
   - record size
   - record mime type
   - approximate expiry date (or record it when set explicitly)
+- allow drag'n'drop
+- big menu to upload (see https://imglink.io/)
 - always send file with access token
 - option to send encrypted data (say, put files into encrypted ZIP archive)
 - Bunch upload via compressing to ZIP first
 - Respect 512MiB limit
-- Set options for uploads
-  - expiry date
-  - `-FSecret`
-  - 0x0 provider
 
 ### Browsing
 
