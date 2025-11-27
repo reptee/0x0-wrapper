@@ -42,8 +42,50 @@ export const provider_boop: NullPointerProviderFull = {
   max_size: 256,
 };
 
+export const provider_local: NullPointerProviderFull = {
+  url: "http://localhost:8080",
+  min_age: 30,
+  max_age: 365,
+  max_size: 512,
+};
+
 export const providers: Array<NullPointerProvider> = [
   provider_0x0,
   provider_vern,
   provider_boop,
+  provider_local,
 ];
+
+export function isProviderFull(
+  obj: NullPointerProvider,
+): obj is NullPointerProviderFull {
+  return (obj as any).min_age !== undefined;
+}
+
+export async function uploadFile(
+  file: File,
+  provider: NullPointerProvider,
+): Promise<Response | Error> {
+  const form = new FormData();
+
+  form.append("file", file, file.name);
+
+  try {
+    const response = await fetch(provider.url, {
+      method: "POST",
+      body: form,
+      headers: {
+        "User-Agent": "curl/a-unique-UA-hopefully",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Upload failed: status=${response.status} status_text=${response.statusText}`,
+      );
+    }
+    return response;
+  } catch (error) {
+    return error as Error;
+  }
+}
