@@ -22,28 +22,29 @@ export function calculate_file_retention(
 }
 
 export const provider_0x0: NullPointerProviderFull = {
-  url: "https://0x0.st/",
+  url: new URL("https://0x0.st/"),
   min_age: 30,
   max_age: 365,
   max_size: 512,
 };
 
 export const provider_vern: NullPointerProviderFull = {
-  url: "https://0.vern.cc/",
+  url: new URL("https://0.vern.cc/"),
   min_age: 10 * 365,
   max_age: 10 * 365,
   max_size: 256,
 };
 
 export const provider_boop: NullPointerProviderFull = {
-  url: "https://boop.icu/",
+  url: new URL("https://boop.icu/"),
   min_age: 30,
   max_age: 365,
   max_size: 256,
 };
 
+// TODO: remove localhost
 export const provider_local: NullPointerProviderFull = {
-  url: "http://localhost:8080",
+  url: new URL("http://localhost:8080"),
   min_age: 30,
   max_age: 365,
   max_size: 512,

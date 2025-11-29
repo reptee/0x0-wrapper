@@ -1,18 +1,30 @@
 <script lang="ts">
+  import UploadConfigPanel from "$lib/components/UploadConfigPanel.svelte";
+  import type { UploadConfig } from "$lib/types";
+
   let uploaded = $state<string | null>(null);
   let error = $state<string | null>(null);
 
   let files = $state<FileList>();
 
+  // TODO: expires per-file with default=inherited
+  // TODO: secret per-file with default=inherited
+  let uploadConfig = $state<UploadConfig>({
+    // TODO: don't hardcode, generate new per session
+    token: "fdc34670-1a17-41c3-89ba-f0b492e8997a",
+    provider: 0,
+    expires: null,
+    secret: false,
+  });
+
+  $inspect(uploadConfig);
+
   async function upload_files() {
     let form = new FormData();
 
-    // TODO: don't hardcode, generate new per session
-    let token = "fdc34670-1a17-41c3-89ba-f0b492e8997a";
+    // TODO: allow to select provider from known + custom?
 
-    // TODO: allow to select provider from known + custom
-    form.set("provider", JSON.stringify(0));
-    form.set("token", JSON.stringify(token));
+    form.set("config", JSON.stringify(uploadConfig));
 
     if (!files) {
       // TODO: report an error?
@@ -43,36 +55,6 @@
       }
     }
   }
-
-  // async function onclick() {
-  //   error = null;
-  //   uploaded = null;
-  //
-  //   const form = new FormData();
-  //   form.append("file", new Blob(["test input"]), "test.txt");
-  //   // TODO: server-side verification
-  //   form.set("provider", JSON.stringify(data.providers[0]));
-  //
-  //   try {
-  //     const response = await fetch("/", {
-  //       method: "POST",
-  //       body: form,
-  //       headers: {
-  //         "User-Agent": "a-unique-UA-hopefully",
-  //       },
-  //     });
-  //
-  //     if (!response.ok) {
-  //       throw new Error(
-  //         `Upload failed: ${response.status} ${response.statusText}`,
-  //       );
-  //     }
-  //
-  //     uploaded = await response.text();
-  //   } catch (err) {
-  //     error = err instanceof Error ? err.message : "Upload failed.";
-  //   }
-  // }
 </script>
 
 <h1>Upload files</h1>
@@ -85,7 +67,6 @@
   <p>Not uploaded yet</p>
 {/if}
 
-<!-- TODO: create configuration widget (see PDS_WWW.md) -->
 <!-- TODO: create upload widget (like on imglink.io) -->
 <div>
   <input type="file" multiple id="fileInput" bind:files />
@@ -99,6 +80,6 @@
         {/each}
       </ul>
     </div>
-    <!-- content here -->
   {/if}
+  <UploadConfigPanel bind:config={uploadConfig}></UploadConfigPanel>
 </div>

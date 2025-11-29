@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import type { UploadFileRes } from "$lib/types";
+import type { UploadConfig, UploadFileRes } from "$lib/types";
 import {
   calculate_file_retention,
   isProviderFull,
@@ -13,18 +13,15 @@ export const POST: RequestHandler = async ({ request }) => {
   const entries = body
     .getAll("files")
     .filter((v) => v instanceof File && v.size > 0) as File[];
-  const provider_id_raw = body.get("provider") as string | null;
-  const token = body.get("token") as string | null;
+  const uploadConfig = body.get("config") as UploadConfig | null;
+  const token = uploadConfig?.token;
+  const provider_id = uploadConfig?.provider;
 
   if (typeof token !== "string" || token.length == 0) {
     return json("expected token");
   }
 
-  if (typeof provider_id_raw !== "string") {
-    return json("missing provider");
-  }
-  const provider_id = Number(provider_id_raw);
-  if (!Number.isInteger(provider_id) || !providers[provider_id]?.url) {
+  if (!provider_id || !providers[provider_id]?.url) {
     return json(`provider expected to be natural up to ${providers.length}`);
   }
 

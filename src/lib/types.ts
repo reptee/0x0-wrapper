@@ -1,20 +1,19 @@
 export type NullPointerProviderFull = {
-  url: string;
+  url: URL;
   min_age: number;
   max_age: number;
   max_size: number;
 };
 
-type Expiry = { epoch_ms: number } | { hours: number };
-
 export type UploadConfig = {
   token: string;
-  expires: Expiry;
+  expires: Date | null;
   secret: boolean;
+  provider: number;
 };
 
 export type NullPointerProviderMinimal = {
-  url: string;
+  url: URL;
 };
 
 export type NullPointerProvider =
