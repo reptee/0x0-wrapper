@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FileUploadWidget from "$lib/components/FileUploadWidget.svelte";
   import UploadConfigPanel from "$lib/components/UploadConfigPanel.svelte";
   import type { UploadConfig } from "$lib/types";
 
@@ -67,7 +68,6 @@
   <p>Not uploaded yet</p>
 {/if}
 
-<!-- TODO: create upload widget (like on imglink.io) -->
 <div>
   <input type="file" multiple id="fileInput" bind:files />
   <button type="button" onclick={upload_files} disabled={!files}>Upload</button>
@@ -82,4 +82,5 @@
     </div>
   {/if}
   <UploadConfigPanel bind:config={uploadConfig}></UploadConfigPanel>
+  <FileUploadWidget bind:files></FileUploadWidget>
 </div>
