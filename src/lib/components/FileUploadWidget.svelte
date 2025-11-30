@@ -1,39 +1,54 @@
 <script lang="ts">
-  let previewMode = $state<boolean>(false);
   let { files = $bindable() }: { files: FileList } = $props();
 
   let dragCounter = $state<number>(0);
   let isDragging = $state<boolean>(false);
+  let previewFiles = $state<File[]>([]);
+  let fileInput = $state<HTMLInputElement | null>();
+  let previewMode = $derived<boolean>(previewFiles.length > 0);
+
+  function updateFiles(list: FileList | File[]) {
+    const array = Array.from(list);
+    let res: FileList;
+    if (list instanceof FileList) {
+      res = list;
+    } else {
+      const dt = new DataTransfer();
+      array.forEach((f) => dt.items.add(f));
+      res = dt.files;
+    }
+    previewFiles = array;
+    files = res;
+  }
 
   function onDragEnter(event: Event) {
-    event.stopPropagation();
+    event.preventDefault();
     dragCounter += 1;
     isDragging = true;
   }
-  function onDragOver(event: Event) {
-    event.stopPropagation();
-  }
+
   function onDragLeave(event: Event) {
-    event.stopPropagation();
+    event.preventDefault();
     dragCounter -= 1;
     isDragging = false;
   }
-  function onDrop(event: Event) {
-    event.stopPropagation();
+
+  function onDrop(event: DragEvent) {
+    event.preventDefault();
     dragCounter = 0;
     isDragging = false;
-  }
-  let fileInput = $state<HTMLInputElement | null>();
-  function openPicker(event: Event) {
-    fileInput?.click();
+    if (event.dataTransfer?.files?.length) {
+      updateFiles(event.dataTransfer.files);
+    }
   }
 
   let max_size = 512; // STUB
 
   // adapted from https://stackoverflow.com/a/18650828
   function formatBytes(bytes: number, decimals: number = 2): string {
+    if (bytes <= 0) return "0 B";
     const dm = Math.max(0, decimals);
-    const sizes = ["Bytes", "KiB", "MiB", "GiB", "TiB"];
+    const sizes = ["B", "KiB", "MiB", "GiB", "TiB"];
 
     const i = Math.floor(Math.log2(bytes) / 10);
 
@@ -50,12 +65,12 @@
     role="button"
     class="dropzone"
     ondragenter={onDragEnter}
-    ondragover={onDragOver}
+    ondragover={(event) => event.preventDefault()}
     ondragleave={onDragLeave}
     ondrop={onDrop}
-    onclick={openPicker}
+    onclick={() => fileInput?.click()}
+    tabindex="0"
   >
-    <p></p>
     {#if !previewMode}
       <!-- <CloudIcon> </CloudIcon> -->
       <p class="drag-here">Drag files here or click to select</p>
@@ -66,18 +81,33 @@
     override upload options -->
       <!-- Should also present option to add more files -->
       <ul class="preview-list">
-        {#each files as file, idx}
+        {#each previewFiles as file, idx}
           <li class="file">
             <div class="file-meta">
               <strong>{file.name}</strong>
-              <span class="file-size">{formatBytes(file.size)}</span>
+              <span class="file-size">({formatBytes(file.size)})</span>
             </div>
-            <button class="file-remove">remove</button>
+            <button
+              class="file-remove"
+              onclick={(event) => {
+                event.stopPropagation();
+              }}>remove</button
+            >
           </li>
         {/each}
       </ul>
     {/if}
-    <input class="sr-only" type="file" multiple bind:this={fileInput} />
+    <input
+      class="sr-only"
+      type="file"
+      multiple
+      bind:this={fileInput}
+      onchange={(event) => {
+        const target = event.currentTarget as HTMLInputElement;
+        if (target.files) updateFiles(target.files);
+        target.value = "";
+      }}
+    />
   </div>
 </section>
 
