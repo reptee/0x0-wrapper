@@ -13,6 +13,7 @@ export type UploadConfig = {
 };
 
 export type UploadOverrides = {
+  enabled: boolean;
   expiration: Date | null;
   secret: boolean | null;
 };
