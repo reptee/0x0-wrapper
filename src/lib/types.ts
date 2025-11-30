@@ -12,6 +12,16 @@ export type UploadConfig = {
   provider: number;
 };
 
+export type UploadOverrides = {
+  expiration: Date | null;
+  secret: boolean | null;
+};
+
+export type UploadCandidate = {
+  file: File;
+  overrides: UploadOverrides;
+};
+
 export type NullPointerProviderMinimal = {
   url: URL;
 };

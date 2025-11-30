@@ -1,36 +1,76 @@
 <script lang="ts">
-  let { files = $bindable() }: { files: FileList } = $props();
+  import type { UploadCandidate } from "$lib/types";
+
+  let { files = $bindable() }: { files: FileList | null } = $props();
 
   let dragCounter = $state<number>(0);
   let isDragging = $state<boolean>(false);
-  let previewFiles = $state<File[]>([]);
+  let candidates = $state<Array<UploadCandidate>>([]);
   let fileInput = $state<HTMLInputElement | null>();
-  let previewMode = $derived<boolean>(previewFiles.length > 0);
 
-  function updateFiles(list: FileList | File[]) {
-    const array = Array.from(list);
-    let res: FileList;
-    if (list instanceof FileList) {
-      res = list;
-    } else {
-      const dt = new DataTransfer();
-      array.forEach((f) => dt.items.add(f));
-      res = dt.files;
+  const previewMode = $derived<boolean>(candidates.length > 0);
+
+  const defaultOverrides = (): UploadCandidate["overrides"] => ({
+    expiration: null,
+    secret: null,
+  });
+
+  const sameFile = (a: File, b: File) =>
+    a.name === b.name &&
+    a.size === b.size &&
+    a.type === b.type &&
+    a.lastModified === b.lastModified;
+
+  function syncFilesFromCandidates() {
+    if (candidates.length === 0) {
+      files = null;
+      return;
     }
-    previewFiles = array;
-    files = res;
+    const dt = new DataTransfer();
+    candidates.forEach(({ file }) => dt.items.add(file));
+    files = dt.files;
   }
 
-  function onDragEnter(event: Event) {
+  function addFiles(list: FileList | File[]) {
+    const incoming = Array.from(list);
+    let next = [...candidates];
+    incoming.forEach((file) => {
+      if (next.some((candidate) => sameFile(candidate.file, file))) {
+        return;
+      }
+      next = [
+        ...next,
+        {
+          file,
+          overrides: defaultOverrides(),
+        },
+      ];
+    });
+    candidates = next;
+    syncFilesFromCandidates();
+  }
+
+  function removeCandidate(idx: number) {
+    candidates = candidates.filter((_, i) => i !== idx);
+    syncFilesFromCandidates();
+  }
+
+  function onDragEnter(event: DragEvent) {
     event.preventDefault();
     dragCounter += 1;
     isDragging = true;
   }
 
-  function onDragLeave(event: Event) {
+  function onDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragCounter -= 1;
-    isDragging = false;
+    dragCounter = Math.max(0, dragCounter - 1);
+    if (dragCounter === 0) {
+      isDragging = false;
+    }
+  }
+
+  function onDragOver(event: DragEvent) {
+    event.preventDefault();
   }
 
   function onDrop(event: DragEvent) {
@@ -38,8 +78,20 @@
     dragCounter = 0;
     isDragging = false;
     if (event.dataTransfer?.files?.length) {
-      updateFiles(event.dataTransfer.files);
+      addFiles(event.dataTransfer.files);
     }
+  }
+
+  function openPicker() {
+    fileInput?.click();
+  }
+
+  function onInputChange(event: Event) {
+    const target = event.currentTarget as HTMLInputElement;
+    if (target.files?.length) {
+      addFiles(target.files);
+    }
+    target.value = "";
   }
 
   let max_size = 512; // STUB
@@ -63,13 +115,20 @@
   </p>
   <div
     role="button"
-    class="dropzone"
+    aria-pressed={previewMode}
+    class={`dropzone ${isDragging ? "dragging" : ""}`}
+    tabindex="0"
     ondragenter={onDragEnter}
-    ondragover={(event) => event.preventDefault()}
+    ondragover={onDragOver}
     ondragleave={onDragLeave}
     ondrop={onDrop}
-    onclick={() => fileInput?.click()}
-    tabindex="0"
+    onclick={openPicker}
+    onkeydown={(event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openPicker();
+      }
+    }}
   >
     {#if !previewMode}
       <!-- <CloudIcon> </CloudIcon> -->
@@ -81,18 +140,22 @@
     override upload options -->
       <!-- Should also present option to add more files -->
       <ul class="preview-list">
-        {#each previewFiles as file, idx}
+        {#each candidates as candidate, idx}
           <li class="file">
             <div class="file-meta">
-              <strong>{file.name}</strong>
-              <span class="file-size">({formatBytes(file.size)})</span>
+              <strong>{candidate.file.name}</strong>
+              <span class="file-size">{formatBytes(candidate.file.size)}</span>
             </div>
             <button
+              type="button"
               class="file-remove"
               onclick={(event) => {
                 event.stopPropagation();
-              }}>remove</button
+                removeCandidate(idx);
+              }}
             >
+              remove
+            </button>
           </li>
         {/each}
       </ul>
@@ -102,11 +165,7 @@
       type="file"
       multiple
       bind:this={fileInput}
-      onchange={(event) => {
-        const target = event.currentTarget as HTMLInputElement;
-        if (target.files) updateFiles(target.files);
-        target.value = "";
-      }}
+      onchange={onInputChange}
     />
   </div>
 </section>
