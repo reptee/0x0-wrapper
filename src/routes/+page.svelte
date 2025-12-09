@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { providers } from "$lib";
   import FileUploadWidget from "$lib/components/FileUploadWidget.svelte";
   import UploadConfigPanel from "$lib/components/UploadConfigPanel.svelte";
-  import type { UploadConfig } from "$lib/types";
+  import UploadInfoPanel from "$lib/components/UploadInfoPanel.svelte";
+  import type { NullPointerProvider, UploadConfig } from "$lib/types";
 
   let uploaded = $state<string | null>(null);
   let error = $state<string | null>(null);
@@ -17,6 +19,10 @@
     expires: null,
     secret: false,
   });
+
+  let provider = $derived<NullPointerProvider>(
+    providers[uploadConfig.provider],
+  );
 
   $inspect(uploadConfig);
 
@@ -58,29 +64,76 @@
   }
 </script>
 
-<h1>Upload files</h1>
+<!-- <h1>Upload files</h1> -->
+<!---->
+<!-- {#if uploaded} -->
+<!--   <p>Uploaded: {uploaded}</p> -->
+<!-- {:else if error} -->
+<!--   <p>{error}</p> -->
+<!-- {:else} -->
+<!--   <p>Not uploaded yet</p> -->
+<!-- {/if} -->
 
-{#if uploaded}
-  <p>Uploaded: {uploaded}</p>
-{:else if error}
-  <p>{error}</p>
-{:else}
-  <p>Not uploaded yet</p>
-{/if}
-
-<div>
-  <input type="file" multiple id="fileInput" bind:files />
-  <button type="button" onclick={upload_files} disabled={!files}>Upload</button>
-  {#if files && Array.from(files).length !== 0}
-    <div>
-      <h2>Selected files</h2>
-      <ul>
-        {#each files as file}
-          <li>{file.name}</li>
-        {/each}
-      </ul>
+<section class="main-panel">
+  <!-- <input type="file" multiple id="fileInput" bind:files /> -->
+  <!-- <button type="button" onclick={upload_files} disabled={!files}>Upload</button> -->
+  <!-- {#if files && Array.from(files).length !== 0} -->
+  <!--   <div> -->
+  <!--     <h2>Selected files</h2> -->
+  <!--     <ul> -->
+  <!--       {#each files as file} -->
+  <!--         <li>{file.name}</li> -->
+  <!--       {/each} -->
+  <!--     </ul> -->
+  <!--   </div> -->
+  <!-- {/if} -->
+  <div>
+    <header class="headline">Upload and Share Files</header>
+    <p class="subheading">
+      Private file uploader with support for multiple services.
+    </p>
+    <FileUploadWidget bind:files></FileUploadWidget>
+    <div class="panels-container">
+      <div class="flex-item">
+        <UploadConfigPanel bind:config={uploadConfig}></UploadConfigPanel>
+      </div>
+      <div class="flex-item">
+        <UploadInfoPanel {provider}></UploadInfoPanel>
+      </div>
     </div>
-  {/if}
-  <UploadConfigPanel bind:config={uploadConfig}></UploadConfigPanel>
-  <FileUploadWidget bind:files></FileUploadWidget>
-</div>
+  </div>
+</section>
+
+<style lang="scss">
+  body {
+    background: blue;
+  }
+  .panels-container {
+    display: flex;
+  }
+  .flex-item {
+    flex: 1;
+    padding: 5pt;
+  }
+  .headline,
+  .subheading {
+    text-align: center;
+  }
+  .headline {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .subheading {
+    font-weight: 300;
+    color: darkblue;
+    margin-top: 3pt;
+  }
+
+  .main-panel {
+    background-color: lightblue;
+    padding: 5pt;
+    border-radius: 1rem;
+  }
+
+</style>

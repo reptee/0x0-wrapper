@@ -156,115 +156,103 @@
   }
 </script>
 
-<section class={{ "has-files": previewMode }}>
-  <header class="headline">Upload and Share Files</header>
-  <p class="subheading">
-    Private file uploader with support for multiple services.
-  </p>
-  <div
-    role="button"
-    aria-pressed={previewMode}
-    class={`dropzone ${isDragging ? "dragging" : ""}`}
-    tabindex="0"
-    ondragenter={onDragEnter}
-    ondragover={onDragOver}
-    ondragleave={onDragLeave}
-    ondrop={onDrop}
-    onclick={openPicker}
-    onkeydown={(event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openPicker();
-      }
-    }}
-  >
-    {#if !previewMode}
-      <!-- <CloudIcon> </CloudIcon> -->
-      <p class="drag-here">Drag files here or click to select</p>
-      <p class="max-size">Maximum size: {max_size} MiB</p>
-      <!-- Empty dialogue asking for dragging file or clicking to select files -->
-    {:else}
-      <!-- When some files are already dragged, preview this files and allow to
-    override upload options -->
-      <!-- Should also present option to add more files -->
-      <ul
-        class="preview-list"
-        onclick={(event) => {
-          event.stopPropagation();
-        }}
-      >
-        {#each candidates as candidate, idx}
-          <li class="file">
-            <div class="file-header">
-              <button
-                type="button"
-                class="file-remove"
-                onclick={(event) => {
-                  event.stopPropagation();
-                  removeCandidate(idx);
-                }}
-              >
-                ✕
-              </button>
-              <div class="file-meta">
-                <strong>{candidate.file.name}</strong>
-                <span class="file-size">{formatBytes(candidate.file.size)}</span
-                >
-              </div>
+<div
+  role="button"
+  aria-pressed={previewMode}
+  class={`dropzone ${isDragging ? "dragging" : ""}`}
+  tabindex="0"
+  ondragenter={onDragEnter}
+  ondragover={onDragOver}
+  ondragleave={onDragLeave}
+  ondrop={onDrop}
+  onclick={openPicker}
+  onkeydown={(event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openPicker();
+    }
+  }}
+>
+  {#if !previewMode}
+    <p class="drag-here">Drag files here or click to select</p>
+    <p class="max-size">Maximum size: {max_size} MiB</p>
+  {:else}
+    <ul class="preview-list">
+      {#each candidates as candidate, idx}
+        <li
+          class="file"
+          onclick={(event) => {
+            event.stopPropagation();
+          }}
+        >
+          <div class="file-header">
+            <button
+              type="button"
+              class="file-remove"
+              onclick={(event) => {
+                event.stopPropagation();
+                removeCandidate(idx);
+              }}
+            >
+              ✕
+            </button>
+            <div class="file-meta">
+              <strong>{candidate.file.name}</strong>
+              <span class="file-size">{formatBytes(candidate.file.size)}</span>
             </div>
-            <label class="override-toggle">
-              <input
-                type="checkbox"
-                checked={candidate.overrides.enabled}
-                onchange={(event) =>
-                  onOverrideToggle(
-                    idx,
-                    (event.currentTarget as HTMLInputElement).checked,
-                  )}
-              />
-              Enable per-file overrides
-            </label>
-            {#if candidate.overrides.enabled}
-              <div class="override-fields" transition:slide>
-                <label>
-                  <span>Expiry date</span>
-                  <input
-                    type="date"
-                    value={formatDateInputValue(candidate.overrides.expiration)}
-                    onchange={(event) =>
-                      onOverrideDateChange(
-                        idx,
-                        (event.currentTarget as HTMLInputElement).value,
-                      )}
-                  />
-                </label>
-                <label class="secret-toggle">
-                  <input
-                    type="checkbox"
-                    checked={candidate.overrides.secret ?? false}
-                    onchange={(event) =>
-                      onOverrideSecretChange(
-                        idx,
-                        (event.currentTarget as HTMLInputElement).checked,
-                      )}
-                  />
-                  <span>Mark as secret</span>
-                </label>
-              </div>
-            {/if}
-          </li>
-        {/each}
-      </ul>
-    {/if}
-    <input
-      class="sr-only"
-      type="file"
-      multiple
-      bind:this={fileInput}
-      onchange={onInputChange}
-    />
-  </div>
-</section>
+          </div>
+          <label class="override-toggle">
+            <input
+              type="checkbox"
+              checked={candidate.overrides.enabled}
+              onchange={(event) =>
+                onOverrideToggle(
+                  idx,
+                  (event.currentTarget as HTMLInputElement).checked,
+                )}
+            />
+            Enable per-file overrides
+          </label>
+          {#if candidate.overrides.enabled}
+            <div class="override-fields" transition:slide>
+              <label>
+                <span>Expiry date</span>
+                <input
+                  type="date"
+                  value={formatDateInputValue(candidate.overrides.expiration)}
+                  onchange={(event) =>
+                    onOverrideDateChange(
+                      idx,
+                      (event.currentTarget as HTMLInputElement).value,
+                    )}
+                />
+              </label>
+              <label class="secret-toggle">
+                <input
+                  type="checkbox"
+                  checked={candidate.overrides.secret ?? false}
+                  onchange={(event) =>
+                    onOverrideSecretChange(
+                      idx,
+                      (event.currentTarget as HTMLInputElement).checked,
+                    )}
+                />
+                <span>Mark as secret</span>
+              </label>
+            </div>
+          {/if}
+        </li>
+      {/each}
+    </ul>
+  {/if}
+  <input
+    class="sr-only"
+    type="file"
+    multiple
+    bind:this={fileInput}
+    onchange={onInputChange}
+  />
+</div>
 
 <style lang="scss">
   .dropzone {
@@ -285,21 +273,8 @@
   }
 
   .drag-here,
-  .max-size,
-  .headline,
-  .subheading {
+  .max-size {
     text-align: center;
-  }
-
-  .headline {
-    font-size: 2rem;
-    font-weight: 700;
-  }
-
-  .subheading {
-    font-weight: 300;
-    color: darkblue;
-    margin-top: 3pt;
   }
 
   .drag-here {
@@ -308,12 +283,6 @@
   }
   .max-size {
     margin-top: 2pt;
-  }
-
-  section {
-    background-color: lightblue;
-    padding: 5pt;
-    border-radius: 1rem;
   }
 
   .preview-list {
@@ -375,7 +344,6 @@
       box-shadow: 0 1px 4px rgba(185, 28, 28, 0.25);
     }
   }
-
 
   .override-toggle {
     display: flex;
