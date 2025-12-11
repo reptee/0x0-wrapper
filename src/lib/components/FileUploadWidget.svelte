@@ -159,7 +159,11 @@
 <div
   role="button"
   aria-pressed={previewMode}
-  class={`dropzone ${isDragging ? "dragging" : ""}`}
+  class={{
+    dropzone: true,
+    "dropzone-empty": !previewMode,
+    dragging: isDragging,
+  }}
   tabindex="0"
   ondragenter={onDragEnter}
   ondragover={onDragOver}
@@ -243,6 +247,20 @@
           {/if}
         </li>
       {/each}
+      <li
+        class="add-more"
+        role="button"
+        tabindex="0"
+        onclick={openPicker}
+        onkeydown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openPicker();
+          }
+        }}
+      >
+        <div class="add-more-content">➕</div>
+      </li>
     </ul>
   {/if}
   <input
@@ -257,14 +275,17 @@
 <style lang="scss">
   .dropzone {
     min-width: 5rem;
-    min-height: 5rem;
+    min-height: 15rem;
     background-color: blanchedalmond;
+    border-radius: 0.5rem;
+    padding: 5pt;
+  }
+
+  .dropzone-empty {
     cursor: pointer;
     transition:
       box-shadow 200ms ease,
       transform 200ms ease;
-    border-radius: 0.5rem;
-    padding: 5pt;
 
     &:hover {
       transform: translateY(-2px);
@@ -288,13 +309,18 @@
   .preview-list {
     list-style: none;
     display: flex;
-    flex-direction: column;
+    flex-flow: row wrap;
     gap: 0.75rem;
     padding: 0;
     margin: 1rem 0 0;
   }
 
-  .file {
+  .preview-list > * {
+    flex: 1 1 200pt;
+  }
+
+  .file,
+  .add-more {
     background: #fff;
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 0.75rem;
@@ -308,6 +334,28 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+  }
+
+  .add-more {
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease;
+    box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(1px) scale(0.9);
+      box-shadow: 0 1px 4px rgba(185, 28, 28, 0.25);
+    }
+  }
+
+  .add-more-content {
+    margin: auto auto;
+    font-size: 2rem;
   }
 
   .file-meta {
@@ -357,17 +405,16 @@
     flex-direction: column;
     gap: 0.5rem;
     margin-top: 0.35rem;
-  }
+    & label {
+      font-size: 0.85rem;
+      color: #475569;
+    }
 
-  .override-fields label {
-    font-size: 0.85rem;
-    color: #475569;
-  }
-
-  .override-fields label:not(.secret-toggle) {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    & label:not(.secret-toggle) {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
   }
 
   .secret-toggle {
@@ -377,15 +424,15 @@
     justify-content: flex-start;
     gap: 0.35rem;
     font-size: 0.9rem;
-  }
 
-  .secret-toggle input {
-    width: auto;
-  }
+    & input {
+      width: auto;
+    }
 
-  .secret-toggle span {
-    flex: 1;
-    text-align: left;
+    & span {
+      flex: 1;
+      text-align: left;
+    }
   }
 
   .sr-only {
