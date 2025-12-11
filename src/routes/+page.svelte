@@ -3,12 +3,18 @@
   import FileUploadWidget from "$lib/components/FileUploadWidget.svelte";
   import UploadConfigPanel from "$lib/components/UploadConfigPanel.svelte";
   import UploadInfoPanel from "$lib/components/UploadInfoPanel.svelte";
-  import type { NullPointerProvider, UploadConfig } from "$lib/types";
+  import type {
+    CandidateMeta,
+    NullPointerProvider,
+    UploadCandidate,
+    UploadConfig,
+  } from "$lib/types";
 
   let uploaded = $state<string | null>(null);
   let error = $state<string | null>(null);
 
-  let files = $state<FileList>();
+  let candidates = $state<UploadCandidate[]>([]);
+  $inspect(candidates);
 
   // TODO: expires per-file with default=inherited
   // TODO: secret per-file with default=inherited
@@ -29,17 +35,23 @@
   async function upload_files() {
     let form = new FormData();
 
-    // TODO: allow to select provider from known + custom?
-
     form.set("config", JSON.stringify(uploadConfig));
 
-    if (!files) {
+    if (candidates.length === 0) {
       // TODO: report an error?
       return;
     }
 
     // TODO: respect file limit?
-    Array.from(files).forEach((file) => form.append("files", file, file.name));
+    candidates.forEach(({ file }) => form.append("files", file, file.name));
+    const manifest: CandidateMeta[] = candidates.map(({ file, overrides }) => ({
+      name: file.name,
+      size: file.size,
+      lastModified: file.lastModified,
+      overrides: overrides,
+    }));
+
+    form.set("manifest", JSON.stringify(manifest));
 
     let resp = await fetch("/", {
       method: "POST",
@@ -64,35 +76,15 @@
   }
 </script>
 
-<!-- <h1>Upload files</h1> -->
-<!---->
-<!-- {#if uploaded} -->
-<!--   <p>Uploaded: {uploaded}</p> -->
-<!-- {:else if error} -->
-<!--   <p>{error}</p> -->
-<!-- {:else} -->
-<!--   <p>Not uploaded yet</p> -->
-<!-- {/if} -->
-
 <section class="main-panel">
-  <!-- <input type="file" multiple id="fileInput" bind:files /> -->
-  <!-- <button type="button" onclick={upload_files} disabled={!files}>Upload</button> -->
-  <!-- {#if files && Array.from(files).length !== 0} -->
-  <!--   <div> -->
-  <!--     <h2>Selected files</h2> -->
-  <!--     <ul> -->
-  <!--       {#each files as file} -->
-  <!--         <li>{file.name}</li> -->
-  <!--       {/each} -->
-  <!--     </ul> -->
-  <!--   </div> -->
-  <!-- {/if} -->
   <div>
     <header class="headline">Upload and Share Files</header>
     <p class="subheading">
       Private file uploader with support for multiple services.
     </p>
-    <FileUploadWidget bind:files></FileUploadWidget>
+    <div class="upload">
+      <FileUploadWidget bind:candidates></FileUploadWidget>
+    </div>
     <div class="panels-container">
       <div class="flex-item">
         <UploadConfigPanel bind:config={uploadConfig}></UploadConfigPanel>
@@ -105,8 +97,8 @@
 </section>
 
 <style lang="scss">
-  body {
-    background: blue;
+  .upload {
+    padding: 5pt;
   }
   .panels-container {
     display: flex;
@@ -135,5 +127,4 @@
     padding: 5pt;
     border-radius: 1rem;
   }
-
 </style>

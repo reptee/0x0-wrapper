@@ -2,11 +2,11 @@
   import type { UploadCandidate } from "$lib/types";
   import { slide } from "svelte/transition";
 
-  let { files = $bindable() }: { files: FileList | null } = $props();
+  let { candidates = $bindable() }: { candidates: UploadCandidate[] } =
+    $props();
 
   let dragCounter = $state<number>(0);
   let isDragging = $state<boolean>(false);
-  let candidates = $state<Array<UploadCandidate>>([]);
   let fileInput = $state<HTMLInputElement | null>();
 
   const previewMode = $derived<boolean>(candidates.length > 0);
@@ -22,16 +22,6 @@
     a.size === b.size &&
     a.type === b.type &&
     a.lastModified === b.lastModified;
-
-  function syncFilesFromCandidates() {
-    if (candidates.length === 0) {
-      files = null;
-      return;
-    }
-    const dt = new DataTransfer();
-    candidates.forEach(({ file }) => dt.items.add(file));
-    files = dt.files;
-  }
 
   function addFiles(list: FileList | File[]) {
     const incoming = Array.from(list);
@@ -49,12 +39,10 @@
       ];
     });
     candidates = next;
-    syncFilesFromCandidates();
   }
 
   function removeCandidate(idx: number) {
     candidates = candidates.filter((_, i) => i !== idx);
-    syncFilesFromCandidates();
   }
 
   function updateCandidate(
@@ -64,7 +52,6 @@
     candidates = candidates.map((candidate, i) =>
       i === idx ? updater(candidate) : candidate,
     );
-    syncFilesFromCandidates();
   }
 
   function onOverrideToggle(idx: number, enabled: boolean) {
