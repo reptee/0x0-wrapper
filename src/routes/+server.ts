@@ -1,62 +1,164 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import type { UploadConfig, UploadFileRes } from "$lib/types";
-import {
-  calculate_file_retention,
-  isProviderFull,
-  providers,
-  uploadFile,
-} from "$lib";
+import type {
+  NullPointerProvider,
+  UploadConfig,
+  UploadFileRes,
+  UploadManifest,
+  UploadOverrides,
+} from "$lib/types";
+import { calculate_file_retention, isProviderFull, providers } from "$lib";
+
+export async function uploadFile(
+  file: File,
+  provider: NullPointerProvider,
+  expiration_epoch_s: number | null = null,
+  secret: boolean | null = null,
+): Promise<Response | Error> {
+  const form = new FormData();
+
+  form.append("file", file, file.name);
+
+  if (secret) {
+    form.append("secret", "");
+  }
+
+  if (expiration_epoch_s) {
+    form.append("expires", Math.floor(expiration_epoch_s * 1000).toString());
+  }
+
+  try {
+    const response = await fetch(provider.url, {
+      method: "POST",
+      body: form,
+      headers: {
+        // TODO: change UA
+        "User-Agent": "curl/a-unique-UA-hopefully",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Upload failed: status=${response.status} status_text=${response.statusText}`,
+      );
+    }
+    return response;
+  } catch (error) {
+    return error as Error;
+  }
+}
+
+function mk_parameters(
+  config: UploadConfig,
+  overrides: UploadOverrides,
+): { expiration_epoch_s: number | null; secret: boolean | null } {
+  let expiration_epoch_s: number | null = null;
+  let secret: boolean | null = null;
+  if (config.expires instanceof Date) {
+    expiration_epoch_s = Math.round(config.expires.getTime() / 1000);
+  }
+  if (overrides.expiration instanceof Date) {
+    expiration_epoch_s = Math.round(overrides.expiration.getTime() / 1000);
+  }
+
+  if (config.secret !== null) {
+    secret = config.secret;
+  }
+  if (overrides.secret !== null) {
+    secret = overrides.secret;
+  }
+  return { secret, expiration_epoch_s };
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   let body: FormData = await request.formData();
-  const entries = body
-    .getAll("files")
-    .filter((v) => v instanceof File && v.size > 0) as File[];
-  const uploadConfig = body.get("config") as UploadConfig | null;
-  const token = uploadConfig?.token;
-  const provider_id = uploadConfig?.provider;
+  const configRaw = body.get("config");
+  const manifestRaw = body.get("manifest");
 
-  if (typeof token !== "string" || token.length == 0) {
-    return json("expected token");
+  if (typeof configRaw !== "string")
+    return json({ error: "missing config", status: 400 });
+  if (typeof manifestRaw !== "string")
+    return json({ error: "missing manifest", status: 400 });
+
+  let config: UploadConfig;
+  let manifest: UploadManifest;
+
+  try {
+    config = JSON.parse(configRaw);
+    manifest = JSON.parse(manifestRaw);
+  } catch {
+    return json({ error: "invalid JSON payload", status: 400 });
   }
 
+  const files = body
+    .getAll("files")
+    .filter((v): v is File => v instanceof File);
+  if (files.length !== manifest.length)
+    return json({ error: "files/manifest length mismatch" }, { status: 400 });
+
+  const items = files.map((file, idx) => ({
+    file: file,
+    overrides: manifest[idx].overrides,
+  }));
+  console.log(items);
+
+  const token = config.token;
+
+  if (typeof token !== "string" || token.length == 0) {
+    return json({ error: "missing token", status: 400 });
+  }
+
+  const provider_id = config.provider;
   if (!provider_id || !providers[provider_id]?.url) {
-    return json(`provider expected to be natural up to ${providers.length}`);
+    return json({
+      error: `provider id expected to be natural up to ${providers.length}`,
+      status: 400,
+    });
   }
 
   let provider = providers[provider_id];
 
-  console.log(entries);
+  console.log(items);
   console.log(provider_id);
 
-  let uploadedFilesPromises = entries.map<Promise<UploadFileRes>>(
-    async (file) => {
-      let res = await uploadFile(file, provider);
-      console.log(res);
-      if (res instanceof Error) {
-        return { ok: false, error: res.message };
-      }
-
-      let expiration_epoch_s = null;
+  let uploadedFilesPromises = items.map<Promise<UploadFileRes>>(
+    async ({ file, overrides }) => {
+      let estimated_expiration_epoch_s: number | null = null;
       let now = Date.now();
 
       if (isProviderFull(provider)) {
+        const file_size_MiB = file.size / 1024 / 1024;
+        if (file_size_MiB > provider.max_size) {
+          return {
+            ok: false,
+            error: "file size exceeds maximum file size allowed by provider",
+          };
+        }
+
         let days_left = calculate_file_retention(
           provider.min_age,
           provider.max_age,
           provider.max_size,
-          file.size / 1024 / 1024,
+          file_size_MiB,
         );
 
-        expiration_epoch_s = Math.floor(now + days_left * 86_400_000);
+        estimated_expiration_epoch_s = Math.floor(now + days_left * 86_400_000);
+      }
+
+      let { expiration_epoch_s, secret } = mk_parameters(config, overrides);
+
+      let res = await uploadFile(file, provider, expiration_epoch_s, secret);
+
+      console.log(res);
+      if (res instanceof Error) {
+        return { ok: false, error: res.message };
       }
 
       return {
         ok: true,
         uploaded_file: {
           name: file.name,
-          expiration_epoch_s: expiration_epoch_s,
+          expiration_epoch_s: estimated_expiration_epoch_s,
           token: token,
           upload_epoch_s: now,
           url: await res.text(),
@@ -66,5 +168,6 @@ export const POST: RequestHandler = async ({ request }) => {
     },
   );
 
+  // TODO: remove successfully uploaded files from the list on the client
   return json(await Promise.all(uploadedFilesPromises));
 };

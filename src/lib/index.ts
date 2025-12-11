@@ -62,31 +62,3 @@ export function isProviderFull(
 ): obj is NullPointerProviderFull {
   return (obj as any).min_age !== undefined;
 }
-
-export async function uploadFile(
-  file: File,
-  provider: NullPointerProvider,
-): Promise<Response | Error> {
-  const form = new FormData();
-
-  form.append("file", file, file.name);
-
-  try {
-    const response = await fetch(provider.url, {
-      method: "POST",
-      body: form,
-      headers: {
-        "User-Agent": "curl/a-unique-UA-hopefully",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Upload failed: status=${response.status} status_text=${response.statusText}`,
-      );
-    }
-    return response;
-  } catch (error) {
-    return error as Error;
-  }
-}

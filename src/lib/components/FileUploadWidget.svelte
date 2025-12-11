@@ -2,8 +2,10 @@
   import type { UploadCandidate } from "$lib/types";
   import { slide } from "svelte/transition";
 
-  let { candidates = $bindable() }: { candidates: UploadCandidate[] } =
-    $props();
+  let {
+    candidates = $bindable(),
+    upload_files,
+  }: { candidates: UploadCandidate[]; upload_files: () => void } = $props();
 
   let dragCounter = $state<number>(0);
   let isDragging = $state<boolean>(false);
@@ -234,6 +236,7 @@
           {/if}
         </li>
       {/each}
+      <!-- TODO: replace with a normal button -->
       <li
         class="add-more"
         role="button"
@@ -247,6 +250,24 @@
         }}
       >
         <div class="add-more-content">➕</div>
+      </li>
+      <!-- TODO: replace with a normal button -->
+      <li
+        class="upload"
+        role="button"
+        tabindex="0"
+        onclick={(event) => {
+          event.stopPropagation();
+          upload_files();
+        }}
+        onkeydown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            upload_files();
+          }
+        }}
+      >
+        <div class="upload-label">Upload</div>
       </li>
     </ul>
   {/if}
@@ -307,7 +328,8 @@
   }
 
   .file,
-  .add-more {
+  .add-more,
+  .upload {
     background: #fff;
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 0.75rem;
@@ -323,7 +345,8 @@
     gap: 0.75rem;
   }
 
-  .add-more {
+  .add-more,
+  .upload {
     cursor: pointer;
     transition:
       transform 180ms ease,
@@ -340,7 +363,8 @@
     }
   }
 
-  .add-more-content {
+  .add-more-content,
+  .upload-label {
     margin: auto auto;
     font-size: 2rem;
   }

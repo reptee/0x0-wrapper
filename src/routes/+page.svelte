@@ -4,10 +4,11 @@
   import UploadConfigPanel from "$lib/components/UploadConfigPanel.svelte";
   import UploadInfoPanel from "$lib/components/UploadInfoPanel.svelte";
   import type {
-    CandidateMeta,
     NullPointerProvider,
     UploadCandidate,
     UploadConfig,
+    UploadManifest,
+    UploadOverrides,
   } from "$lib/types";
 
   let uploaded = $state<string | null>(null);
@@ -44,11 +45,8 @@
 
     // TODO: respect file limit?
     candidates.forEach(({ file }) => form.append("files", file, file.name));
-    const manifest: CandidateMeta[] = candidates.map(({ file, overrides }) => ({
-      name: file.name,
-      size: file.size,
-      lastModified: file.lastModified,
-      overrides: overrides,
+    const manifest: UploadManifest = candidates.map(({ overrides }) => ({
+      overrides,
     }));
 
     form.set("manifest", JSON.stringify(manifest));
@@ -57,8 +55,6 @@
       method: "POST",
       body: form,
     });
-
-    $inspect(resp);
 
     if (resp.ok) {
       try {
@@ -83,7 +79,7 @@
       Private file uploader with support for multiple services.
     </p>
     <div class="upload">
-      <FileUploadWidget bind:candidates></FileUploadWidget>
+      <FileUploadWidget bind:candidates {upload_files}></FileUploadWidget>
     </div>
     <div class="panels-container">
       <div class="flex-item">

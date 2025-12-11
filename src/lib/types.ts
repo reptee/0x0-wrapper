@@ -23,12 +23,9 @@ export type UploadCandidate = {
   overrides: UploadOverrides;
 };
 
-export type CandidateMeta = {
-  name: string;
-  size: number;
-  lastModified: number;
+export type UploadManifest = Array<{
   overrides: UploadOverrides;
-};
+}>;
 
 export type NullPointerProviderMinimal = {
   url: URL;
