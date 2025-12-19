@@ -67,7 +67,9 @@ function mk_parameters(
   if (overrides.secret !== null) {
     secret = overrides.secret;
   }
-  return { secret, expiration_epoch_s };
+  const res = { secret, expiration_epoch_s };
+  console.log(res);
+  return res;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -100,7 +102,8 @@ export const POST: RequestHandler = async ({ request }) => {
     file: file,
     overrides: manifest[idx].overrides,
   }));
-  console.log(items);
+
+  // console.log(items);
 
   const token = config.token;
 
@@ -109,7 +112,11 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 
   const provider_id = config.provider;
-  if (!provider_id || !providers[provider_id]?.url) {
+
+  // console.log(provider_id);
+  // console.log(providers[provider_id]);
+
+  if (typeof provider_id !== "number" || !providers[provider_id]?.url) {
     return json({
       error: `provider id expected to be natural up to ${providers.length}`,
       status: 400,
@@ -118,8 +125,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
   let provider = providers[provider_id];
 
-  console.log(items);
-  console.log(provider_id);
+  // console.log(items);
+  // console.log(provider_id);
 
   let uploadedFilesPromises = items.map<Promise<UploadFileRes>>(
     async ({ file, overrides }) => {

@@ -7,15 +7,17 @@
     NullPointerProvider,
     UploadCandidate,
     UploadConfig,
+    UploadFileRes,
     UploadManifest,
     UploadOverrides,
   } from "$lib/types";
 
-  let uploaded = $state<string | null>(null);
+  let uploaded = $state<UploadFileRes[] | null>(null);
   let error = $state<string | null>(null);
 
   let candidates = $state<UploadCandidate[]>([]);
   $inspect(candidates);
+  $inspect(uploaded);
 
   // TODO: expires per-file with default=inherited
   // TODO: secret per-file with default=inherited
@@ -33,14 +35,18 @@
 
   $inspect(uploadConfig);
 
-  async function upload_files() {
+  // TODO: remove
+  let test = $state();
+  $inspect(test);
+
+  async function upload_files(): Promise<Error | void> {
     let form = new FormData();
 
     form.set("config", JSON.stringify(uploadConfig));
 
     if (candidates.length === 0) {
       // TODO: report an error?
-      return;
+      return new Error("No candidates for upload");
     }
 
     // TODO: respect file limit?
@@ -55,20 +61,39 @@
       method: "POST",
       body: form,
     });
+    console.log(manifest);
+    console.log(uploadConfig);
 
-    if (resp.ok) {
-      try {
-        uploaded = await resp.text();
-      } catch (err) {
-        error = (err as Error).message;
-      }
-    } else {
+    if (!resp.ok) {
       try {
         error = await resp.text();
       } catch (err) {
-        error = (err as Error).message;
+        return err as Error;
       }
+      return new Error(error);
     }
+
+    try {
+      uploaded = await resp.json();
+    } catch (err) {
+      console.log(err);
+      return err as Error;
+    }
+
+    if (uploaded === null) {
+      return new Error("Failed to get response");
+    }
+
+    // Endpoint returns a list that mirrors sent files. So if i-th status is OK,
+    // we remove it from candidate list.
+
+    const successful_uploads = uploaded
+      .map((item, i) => (item.ok ? i : null))
+      .filter((i) => i !== null);
+    const to_remove = new Set(successful_uploads);
+    candidates = candidates.filter((_, idx) => !to_remove.has(idx));
+
+    // TODO: notification about successful upload and upload failureg
   }
 </script>
 
