@@ -87,11 +87,16 @@
     // Endpoint returns a list that mirrors sent files. So if i-th status is OK,
     // we remove it from candidate list.
 
-    const successful_uploads = uploaded
-      .map((item, i) => (item.ok ? i : null))
-      .filter((i) => i !== null);
-    const to_remove = new Set(successful_uploads);
-    candidates = candidates.filter((_, idx) => !to_remove.has(idx));
+    let successful_uploads = new Set<number>();
+    uploaded.forEach((upload, idx) => {
+      if (!upload.ok) {
+        candidates[idx].upload_failure = upload.error;
+      } else {
+        successful_uploads.add(idx);
+      }
+    });
+    console.log(successful_uploads);
+    candidates = candidates.filter((_, idx) => !successful_uploads.has(idx));
 
     // TODO: notification about successful upload and upload failureg
   }

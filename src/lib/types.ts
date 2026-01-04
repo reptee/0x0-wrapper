@@ -19,6 +19,7 @@ export type UploadOverrides = {
 };
 
 export type UploadCandidate = {
+  upload_failure: null | string;
   file: File;
   overrides: UploadOverrides;
 };

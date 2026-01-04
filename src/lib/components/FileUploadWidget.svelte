@@ -37,6 +37,7 @@
         {
           file,
           overrides: defaultOverrides(),
+          upload_failure: null,
         },
       ];
     });
@@ -234,6 +235,9 @@
               </label>
             </div>
           {/if}
+          {#if candidate.upload_failure}
+            <p class="upload-failure">Error: {candidate.upload_failure}</p>
+          {/if}
         </li>
       {/each}
       <!-- TODO: replace with a normal button -->
@@ -402,6 +406,10 @@
       transform: translateY(1px) scale(0.9) rotate(8deg);
       box-shadow: 0 1px 4px rgba(185, 28, 28, 0.25);
     }
+  }
+
+  .upload-failure {
+    color: red;
   }
 
   .override-toggle {
