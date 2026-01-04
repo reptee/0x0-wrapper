@@ -240,38 +240,18 @@
           {/if}
         </li>
       {/each}
-      <!-- TODO: replace with a normal button -->
-      <li
-        class="add-more"
-        role="button"
-        tabindex="0"
-        onclick={openPicker}
-        onkeydown={(event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            openPicker();
-          }
-        }}
-      >
-        <div class="add-more-content">➕</div>
+      <li class="card">
+        <!-- TODO: verify it does not propagate the event -->
+        <button onclick={openPicker}>➕</button>
       </li>
       <!-- TODO: replace with a normal button -->
-      <li
-        class="upload"
-        role="button"
-        tabindex="0"
-        onclick={(event) => {
-          event.stopPropagation();
-          upload_files();
-        }}
-        onkeydown={(event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
+      <li class="card">
+        <button
+          onclick={(event) => {
+            event.stopPropagation();
             upload_files();
-          }
-        }}
-      >
-        <div class="upload-label">Upload</div>
+          }}>Upload</button
+        >
       </li>
     </ul>
   {/if}
@@ -331,9 +311,8 @@
     flex: 1 1 200pt;
   }
 
-  .file,
-  .add-more,
-  .upload {
+  .card,
+  .file {
     background: #fff;
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 0.75rem;
@@ -349,7 +328,16 @@
     gap: 0.75rem;
   }
 
-  .add-more,
+  .card > button {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    border: none;
+    background: transparent;
+    font-size: 2rem;
+  }
+
+  .card,
   .upload {
     cursor: pointer;
     transition:
@@ -362,12 +350,11 @@
     }
 
     &:active {
-      transform: translateY(1px) scale(0.9);
+      transform: translateY(1px) scale(0.98);
       box-shadow: 0 1px 4px rgba(185, 28, 28, 0.25);
     }
   }
 
-  .add-more-content,
   .upload-label {
     margin: auto auto;
     font-size: 2rem;
