@@ -1,11 +1,17 @@
 <script lang="ts">
-  import type { UploadCandidate } from "$lib/types";
+    import { isProviderFull } from "$lib";
+  import type { NullPointerProvider, UploadCandidate } from "$lib/types";
   import { slide } from "svelte/transition";
 
   let {
     candidates = $bindable(),
     upload_files,
-  }: { candidates: UploadCandidate[]; upload_files: () => void } = $props();
+    provider,
+  }: {
+    candidates: UploadCandidate[];
+    upload_files: () => void;
+    provider: NullPointerProvider;
+  } = $props();
 
   let dragCounter = $state<number>(0);
   let isDragging = $state<boolean>(false);
@@ -132,7 +138,13 @@
     target.value = "";
   }
 
-  let max_size = 512; // STUB
+  let max_size = $derived.by(() => {
+    if (isProviderFull(provider)) {
+      return provider.max_size;
+    } else {
+      return 256; // conservative assumption
+    }
+  });
 
   // adapted from https://stackoverflow.com/a/18650828
   function formatBytes(bytes: number, decimals: number = 2): string {

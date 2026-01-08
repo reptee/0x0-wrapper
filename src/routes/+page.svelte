@@ -109,7 +109,7 @@
       Private file uploader with support for multiple services.
     </p>
     <div class="upload">
-      <FileUploadWidget bind:candidates {upload_files}></FileUploadWidget>
+      <FileUploadWidget bind:candidates {upload_files} {provider}></FileUploadWidget>
     </div>
     <div class="panels-container">
       <div class="flex-item">
