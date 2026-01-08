@@ -173,11 +173,14 @@
   {:else}
     <ul class="preview-list">
       {#each candidates as candidate, idx}
+        <!-- NOTE: it complains about a11y, but it was the easiest approach to
+        achieve desired behavior: clicking on dropzone non-interactive children
+        shouldn't open file picker, but buttons inside the children themselves
+        still work. -->
         <li
-          class="file"
-          onclick={(event) => {
-            event.stopPropagation();
-          }}
+          class="card"
+          onclick={(event) => event.stopPropagation()}
+          onkeydown={(event) => event.stopPropagation()}
         >
           <div class="file-header">
             <button
@@ -311,8 +314,7 @@
     flex: 1 1 200pt;
   }
 
-  .card,
-  .file {
+  .card {
     background: #fff;
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 0.75rem;
