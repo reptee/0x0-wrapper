@@ -7,10 +7,12 @@
     NullPointerProvider,
     UploadCandidate,
     UploadConfig,
+    UploadedFile,
     UploadFileRes,
     UploadManifest,
     UploadOverrides,
   } from "$lib/types";
+  import { onMount } from "svelte";
 
   let uploaded = $state<UploadFileRes[] | null>(null);
   let error = $state<string | null>(null);
@@ -19,8 +21,19 @@
   $inspect(candidates);
   $inspect(uploaded);
 
-  // TODO: expires per-file with default=inherited
-  // TODO: secret per-file with default=inherited
+  function init_upload_index() {
+    const upload_index = localStorage.getItem("upload-index");
+    if (!upload_index) {
+      localStorage.setItem("upload-index", JSON.stringify([]));
+    }
+  }
+
+  // onMount to prevent code from being executed on the server side, which does
+  // not have localStorage API
+  onMount(() => {
+    init_upload_index();
+  });
+
   let uploadConfig = $state<UploadConfig>({
     provider: 0,
     expires: null,
@@ -33,9 +46,19 @@
 
   $inspect(uploadConfig);
 
-  // TODO: remove
-  let test = $state();
-  $inspect(test);
+  function update_upload_index(uploads: UploadFileRes[]) {
+    const successful_uploads = uploads.filter((it) => it.ok);
+
+    const upload_index_raw = localStorage.getItem("upload-index") || "[]";
+    const old_upload_index: UploadedFile[] = JSON.parse(upload_index_raw) || [];
+    const new_upload_index: UploadedFile[] = successful_uploads
+      .map((el) => el.uploaded_file)
+      .concat(old_upload_index);
+
+    const new_upload_index_raw = JSON.stringify(new_upload_index);
+
+    localStorage.setItem("upload-index", new_upload_index_raw);
+  }
 
   async function upload_files(): Promise<Error | void> {
     let form = new FormData();
@@ -94,7 +117,14 @@
       }
     });
     console.log(successful_uploads);
+    candidates
+      .filter((_, idx) => successful_uploads.has(idx))
+      .forEach((file) => {
+        localStorage.setItem;
+      });
     candidates = candidates.filter((_, idx) => !successful_uploads.has(idx));
+
+    update_upload_index(uploaded);
 
     // TODO: notification about successful upload and upload failureg
   }
@@ -107,7 +137,8 @@
       Private file uploader with support for multiple services.
     </p>
     <div class="upload">
-      <FileUploadWidget bind:candidates {upload_files} {provider}></FileUploadWidget>
+      <FileUploadWidget bind:candidates {upload_files} {provider}
+      ></FileUploadWidget>
     </div>
     <div class="panels-container">
       <div class="flex-item">
