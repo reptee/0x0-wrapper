@@ -105,12 +105,6 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // console.log(items);
 
-  const token = config.token;
-
-  if (typeof token !== "string" || token.length == 0) {
-    return json({ error: "missing token", status: 400 });
-  }
-
   const provider_id = config.provider;
 
   // console.log(provider_id);
@@ -161,12 +155,22 @@ export const POST: RequestHandler = async ({ request }) => {
         return { ok: false, error: res.message };
       }
 
+      const token = res.headers.get("X-Token");
+      if (!token) {
+        return {
+          ok: false,
+          error: "Failed to retrieve management token from response.",
+        };
+      }
+      const expiry_ms =
+        Math.floor(Number(res.headers.get("X-Expires"))) || expiration_epoch_s;
+
       return {
         ok: true,
         uploaded_file: {
           name: file.name,
-          expiration_epoch_s: estimated_expiration_epoch_s,
           token: token,
+          expiration_epoch_s: expiry_ms,
           upload_epoch_s: now,
           url: await res.text(),
           mime: file.type,

@@ -22,8 +22,6 @@
   // TODO: expires per-file with default=inherited
   // TODO: secret per-file with default=inherited
   let uploadConfig = $state<UploadConfig>({
-    // TODO: don't hardcode, generate new per session
-    token: "fdc34670-1a17-41c3-89ba-f0b492e8997a",
     provider: 0,
     expires: null,
     secret: false,

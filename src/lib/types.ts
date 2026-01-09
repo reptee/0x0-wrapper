@@ -6,7 +6,6 @@ export type NullPointerProviderFull = {
 };
 
 export type UploadConfig = {
-  token: string;
   expires: Date | null;
   secret: boolean;
   provider: number;
