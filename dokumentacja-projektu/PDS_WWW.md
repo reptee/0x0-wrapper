@@ -43,4 +43,5 @@ Records of saved files should be stored via
 
 ### Privacy policy
 
-Copy 0x0's privacy policy
+Copy 0x0's privacy policy, mention that this PP is related to the service
+itself, check out the respective provider privacy policy
