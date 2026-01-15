@@ -23,4 +23,18 @@ if (browser) {
   upload_index.subscribe((files) => {
     localStorage.setItem(KEY, JSON.stringify(files));
   });
+
+  const sync = (event: StorageEvent) => {
+    if (event.key != KEY) {
+      return;
+    }
+    try {
+      upload_index.set(event.newValue ? JSON.parse(event.newValue) : []);
+    } catch {
+      upload_index.set([]);
+    }
+  };
+  // Event listener that handles the opposite state flow: storage was changed,
+  // so should be the upload_index.
+  window.addEventListener("storage", sync);
 }

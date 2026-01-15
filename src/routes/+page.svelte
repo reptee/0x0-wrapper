@@ -15,12 +15,10 @@
   } from "$lib/types";
   import { onMount } from "svelte";
 
-  let uploaded = $state<UploadFileRes[] | null>(null);
   let error = $state<string | null>(null);
 
   let candidates = $state<UploadCandidate[]>([]);
   $inspect(candidates);
-  $inspect(uploaded);
 
   let uploadConfig = $state<UploadConfig>({
     provider: 0,
@@ -34,13 +32,6 @@
 
   $inspect(uploadConfig);
 
-  function update_upload_index(uploads: UploadFileRes[]) {
-    const successful_uploads = uploads.filter((it) => it.ok);
-    upload_index.update((files) => {
-      const new_uploads = successful_uploads.map((it) => it.uploaded_file);
-      return files.concat(new_uploads);
-    });
-  }
 
   async function upload_files(): Promise<Error | void> {
     let form = new FormData();
@@ -76,6 +67,7 @@
       return new Error(error);
     }
 
+    let uploaded: UploadFileRes[] = [];
     try {
       uploaded = await resp.json();
     } catch (err) {
@@ -98,10 +90,14 @@
         successful_uploads.add(idx);
       }
     });
-    console.log(successful_uploads);
     candidates = candidates.filter((_, idx) => !successful_uploads.has(idx));
 
-    update_upload_index(uploaded);
+    const uploads_good = uploaded
+      .filter((it) => it.ok)
+      .map((it) => it.uploaded_file);
+    upload_index.update((files) => {
+      return files.concat(uploads_good);
+    });
 
     // TODO: notification about successful upload and upload failureg
   }
