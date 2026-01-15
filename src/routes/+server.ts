@@ -12,7 +12,7 @@ import { calculate_file_retention, isProviderFull, providers } from "$lib";
 export async function uploadFile(
   file: File,
   provider: NullPointerProvider,
-  expiration_epoch_s: number | null = null,
+  expiration_epoch_ms: number | null = null,
   secret: boolean | null = null,
 ): Promise<Response | Error> {
   const form = new FormData();
@@ -23,8 +23,8 @@ export async function uploadFile(
     form.append("secret", "");
   }
 
-  if (expiration_epoch_s) {
-    form.append("expires", Math.floor(expiration_epoch_s * 1000).toString());
+  if (expiration_epoch_ms) {
+    form.append("expires", Math.floor(expiration_epoch_ms).toString());
   }
 
   try {
@@ -51,14 +51,14 @@ export async function uploadFile(
 function mk_parameters(
   config: UploadConfig,
   overrides: UploadOverrides,
-): { expiration_epoch_s: number | null; secret: boolean | null } {
-  let expiration_epoch_s: number | null = null;
+): { expiration_epoch_ms: number | null; secret: boolean | null } {
+  let expiration_epoch_ms: number | null = null;
   let secret: boolean | null = null;
   if (config.expires instanceof Date) {
-    expiration_epoch_s = Math.round(config.expires.getTime() / 1000);
+    expiration_epoch_ms = Math.round(config.expires.getTime());
   }
   if (overrides.expiration instanceof Date) {
-    expiration_epoch_s = Math.round(overrides.expiration.getTime() / 1000);
+    expiration_epoch_ms = Math.round(overrides.expiration.getTime());
   }
 
   if (config.secret !== null) {
@@ -67,7 +67,7 @@ function mk_parameters(
   if (overrides.secret !== null) {
     secret = overrides.secret;
   }
-  const res = { secret, expiration_epoch_s };
+  const res = { secret, expiration_epoch_ms };
   console.log(res);
   return res;
 }
@@ -124,7 +124,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
   let uploadedFilesPromises = items.map<Promise<UploadFileRes>>(
     async ({ file, overrides }) => {
-      let estimated_expiration_epoch_s: number | null = null;
+      let estimated_expiration_epoch_ms: number | null = null;
       let now = Date.now();
 
       if (isProviderFull(provider)) {
@@ -143,12 +143,14 @@ export const POST: RequestHandler = async ({ request }) => {
           file_size_MiB,
         );
 
-        estimated_expiration_epoch_s = Math.floor(now + days_left * 86_400_000);
+        estimated_expiration_epoch_ms = Math.floor(
+          now + days_left * 86_400_000,
+        );
       }
 
-      let { expiration_epoch_s, secret } = mk_parameters(config, overrides);
+      let { expiration_epoch_ms, secret } = mk_parameters(config, overrides);
 
-      let res = await uploadFile(file, provider, expiration_epoch_s, secret);
+      let res = await uploadFile(file, provider, expiration_epoch_ms, secret);
 
       console.log(res);
       if (res instanceof Error) {
@@ -156,23 +158,25 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       const token = res.headers.get("X-Token");
+      const url = await res.text();
       if (!token) {
         return {
           ok: false,
-          error: "Failed to retrieve management token from response.",
+          error: `Provider did not send a management token. Most likely the exact same file was uploaded before. File's url: ${url}.`,
         };
       }
       const expiry_ms =
-        Math.floor(Number(res.headers.get("X-Expires"))) || expiration_epoch_s;
+        Math.floor(Number(res.headers.get("X-Expires"))) || expiration_epoch_ms;
 
       return {
         ok: true,
         uploaded_file: {
           name: file.name,
+          size: file.size,
           token: token,
-          expiration_epoch_s: expiry_ms,
-          upload_epoch_s: now,
-          url: await res.text(),
+          expiration_epoch_ms: expiry_ms,
+          upload_epoch_ms: now,
+          url: url,
           mime: file.type,
         },
       };
