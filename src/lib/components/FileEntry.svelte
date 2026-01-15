@@ -1,6 +1,7 @@
 <script lang="ts">
   import { formatBytes } from "$lib";
   import type { UploadedFile } from "$lib/types";
+  import { upload_index } from "$lib/stores/UploadIndex";
 
   let { uploadedFile }: { uploadedFile: UploadedFile } = $props();
   const url = new URL(uploadedFile.url);
@@ -14,13 +15,22 @@
     const confirmation = confirm(
       `Czy na pewno chcesz usunąć ${uploadedFile.name}?`,
     );
+
     if (!confirmation) {
       return;
     }
-    let resp = await fetch("/browse", {
-      method: "DELETE",
-      body: JSON.stringify(uploadedFile),
-    });
+
+    let resp: { ok: boolean; error: string | undefined } = await fetch(
+      "/browse",
+      {
+        method: "DELETE",
+        body: JSON.stringify(uploadedFile),
+      },
+    ).then((it) => it.json());
+    // TODO: remove from index only on success
+    upload_index.update((list) =>
+      list.filter(({ token }) => token != uploadedFile.token),
+    );
   }
 </script>
 
@@ -31,7 +41,6 @@
   </td>
   <td>{url.hostname}</td>
   <td>{expiry_date}</td>
-  <!-- TODO: remove from index -->
   <td><button class="remove" onclick={removeFile}>Remove</button></td>
 </tr>
 

@@ -2,12 +2,16 @@
   import FileEntry from "$lib/components/FileEntry.svelte";
   import type { UploadedFile } from "$lib/types";
   import { onMount } from "svelte";
+  import { upload_index } from "$lib/stores/UploadIndex";
+  import { browser } from "$app/environment";
 
   let uploadFiles: UploadedFile[] = [];
-  onMount(() => {
-    const upload_index_raw = localStorage.getItem("upload-index") || "[]";
-    uploadFiles = JSON.parse(upload_index_raw);
-  });
+
+  if (browser) {
+    upload_index.subscribe((files) => {
+      uploadFiles = files;
+    });
+  }
 </script>
 
 <div>

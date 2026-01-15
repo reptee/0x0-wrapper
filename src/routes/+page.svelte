@@ -3,6 +3,7 @@
   import FileUploadWidget from "$lib/components/FileUploadWidget.svelte";
   import UploadConfigPanel from "$lib/components/UploadConfigPanel.svelte";
   import UploadInfoPanel from "$lib/components/UploadInfoPanel.svelte";
+  import { upload_index } from "$lib/stores/UploadIndex";
   import type {
     NullPointerProvider,
     UploadCandidate,
@@ -21,19 +22,6 @@
   $inspect(candidates);
   $inspect(uploaded);
 
-  function init_upload_index() {
-    const upload_index = localStorage.getItem("upload-index");
-    if (!upload_index) {
-      localStorage.setItem("upload-index", JSON.stringify([]));
-    }
-  }
-
-  // onMount to prevent code from being executed on the server side, which does
-  // not have localStorage API
-  onMount(() => {
-    init_upload_index();
-  });
-
   let uploadConfig = $state<UploadConfig>({
     provider: 0,
     expires: null,
@@ -48,16 +36,10 @@
 
   function update_upload_index(uploads: UploadFileRes[]) {
     const successful_uploads = uploads.filter((it) => it.ok);
-
-    const upload_index_raw = localStorage.getItem("upload-index") || "[]";
-    const old_upload_index: UploadedFile[] = JSON.parse(upload_index_raw) || [];
-    const new_upload_index: UploadedFile[] = successful_uploads
-      .map((el) => el.uploaded_file)
-      .concat(old_upload_index);
-
-    const new_upload_index_raw = JSON.stringify(new_upload_index);
-
-    localStorage.setItem("upload-index", new_upload_index_raw);
+    upload_index.update((files) => {
+      const new_uploads = successful_uploads.map((it) => it.uploaded_file);
+      return files.concat(new_uploads);
+    });
   }
 
   async function upload_files(): Promise<Error | void> {
@@ -117,11 +99,6 @@
       }
     });
     console.log(successful_uploads);
-    candidates
-      .filter((_, idx) => successful_uploads.has(idx))
-      .forEach((file) => {
-        localStorage.setItem;
-      });
     candidates = candidates.filter((_, idx) => !successful_uploads.has(idx));
 
     update_upload_index(uploaded);
