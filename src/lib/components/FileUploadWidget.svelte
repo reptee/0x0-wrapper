@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { isProviderFull } from "$lib";
+    import { formatBytes, isProviderFull } from "$lib";
   import type { NullPointerProvider, UploadCandidate } from "$lib/types";
   import { slide } from "svelte/transition";
 
@@ -145,17 +145,6 @@
       return 256; // conservative assumption
     }
   });
-
-  // adapted from https://stackoverflow.com/a/18650828
-  function formatBytes(bytes: number, decimals: number = 2): string {
-    if (bytes <= 0) return "0 B";
-    const dm = Math.max(0, decimals);
-    const sizes = ["B", "KiB", "MiB", "GiB", "TiB"];
-
-    const i = Math.floor(Math.log2(bytes) / 10);
-
-    return `${parseFloat((bytes / Math.pow(1024, i)).toFixed(dm))} ${sizes[i]}`;
-  }
 </script>
 
 <div

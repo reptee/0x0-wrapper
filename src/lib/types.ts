@@ -37,10 +37,11 @@ export type NullPointerProvider =
 
 export type UploadedFile = {
   name: string;
+  size: number; // size in bytes
   expiration_epoch_ms: number | null;
   token: string;
-  url: string;
   upload_epoch_ms: number;
+  url: string; // TODO: change to URL
   mime: string;
 };
 
