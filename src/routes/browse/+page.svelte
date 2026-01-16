@@ -42,6 +42,7 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     overflow: hidden;
     border-radius: 0.35rem;
+    table-layout: fixed;
   }
 
   .uploads-table thead {
@@ -52,9 +53,12 @@
     font-weight: 700;
   }
 
-  .uploads-table th,
-  .uploads-table td {
+  :global(.uploads-table th),
+  :global(.uploads-table td) {
     padding: 0.9rem 1rem;
     text-align: left;
+  }
+  :global(.uploads-table td) {
+    padding: 0.3rem 1rem;
   }
 </style>

@@ -65,27 +65,31 @@
   }
 
   .link {
-    display: block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     margin: auto;
+    min-width: 4.25rem;
     background: #2563eb;
     color: #fff;
     border: none;
-    padding: 0.40rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     border-radius: 999px;
     cursor: pointer;
     font-weight: 600;
     box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
     text-decoration: none;
+    white-space: nowrap;
     transition:
       transform 150ms ease,
       box-shadow 150ms ease,
       background 150ms ease;
-    &:hover:not(:disabled) {
+    &:hover {
       transform: translateY(-1px);
       box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
     }
 
-    &:active:not(:disabled) {
+    &:active {
       transform: translateY(0);
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }

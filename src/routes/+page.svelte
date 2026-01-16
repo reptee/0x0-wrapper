@@ -151,7 +151,7 @@
   }
 
   .main-panel {
-    background-color: lightblue;
+    background-color: #dfe3eb;
     padding: 5pt;
     border-radius: 1rem;
   }

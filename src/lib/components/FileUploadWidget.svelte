@@ -272,7 +272,7 @@
   .dropzone {
     min-width: 5rem;
     min-height: 15rem;
-    background-color: blanchedalmond;
+    background-color: white;
     border-radius: 0.5rem;
     padding: 5pt;
   }
@@ -346,7 +346,7 @@
     transition:
       transform 180ms ease,
       box-shadow 180ms ease;
-    box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+    box-shadow: 0 4px 12px #BBD3FC;
 
     &:hover {
       transform: translateY(-2px);
