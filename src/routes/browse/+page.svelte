@@ -22,6 +22,8 @@
         <th>Rozmiar</th>
         <th>Dostawca</th>
         <th>Data ważności</th>
+        <th>Usuń</th>
+        <th>Link</th>
       </tr>
     </thead>
     <tbody>

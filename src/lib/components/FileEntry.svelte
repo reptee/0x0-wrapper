@@ -11,6 +11,7 @@
     expiry_date = new Date(uploadedFile.expiration_epoch_ms).toLocaleString();
   }
 
+  // TODO: make button inactive until transaction is finished
   async function removeFile(event: Event) {
     const confirmation = confirm(
       `Czy na pewno chcesz usunąć ${uploadedFile.name}?`,
@@ -19,6 +20,10 @@
     if (!confirmation) {
       return;
     }
+
+    const button = event.currentTarget as HTMLButtonElement;
+
+    button.disabled = true;
 
     let resp: { ok: boolean; error: string | undefined } = await fetch(
       "/browse",
@@ -31,6 +36,7 @@
     upload_index.update((list) =>
       list.filter(({ token }) => token != uploadedFile.token),
     );
+    button.disabled = false;
   }
 </script>
 
@@ -42,6 +48,7 @@
   <td>{url.hostname}</td>
   <td>{expiry_date}</td>
   <td><button class="remove" onclick={removeFile}>Remove</button></td>
+  <td><a href={uploadedFile.url}>link</a></td>
 </tr>
 
 <style lang="scss">
