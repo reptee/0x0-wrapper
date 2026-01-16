@@ -47,7 +47,7 @@
   </td>
   <td>{url.hostname}</td>
   <td>{expiry_date}</td>
-  <td><a href={uploadedFile.url}>link</a></td>
+  <td><a class="link" href={uploadedFile.url}>link</a></td>
   <td><button class="remove" onclick={removeFile}>Remove</button></td>
 </tr>
 
@@ -64,10 +64,37 @@
     background: #eef2ff;
   }
 
-  .remove {
+  .link {
     display: block;
     margin: auto;
     background: #2563eb;
+    color: #fff;
+    border: none;
+    padding: 0.40rem 0.75rem;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    text-decoration: none;
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease,
+      background 150ms ease;
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+  }
+
+  .remove {
+    display: block;
+    margin: auto;
+    background: #D45500;
     color: #fff;
     border: none;
     padding: 0.45rem 0.75rem;
@@ -75,24 +102,25 @@
     cursor: pointer;
     font-weight: 600;
     box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
-    transition: transform 150ms ease, box-shadow 150ms ease,
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease,
       background 150ms ease;
-  }
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
+    }
 
-  .remove:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
-  }
+    &:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
 
-  .remove:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-  }
-
-  .remove:disabled {
-    background: #b91c1c;
-    box-shadow: 0 6px 16px rgba(185, 28, 28, 0.3);
-    cursor: not-allowed;
-    opacity: 0.9;
+    &:disabled {
+      background: #b91c1c;
+      box-shadow: 0 6px 16px rgba(185, 28, 28, 0.3);
+      cursor: not-allowed;
+      opacity: 0.9;
+    }
   }
 </style>
