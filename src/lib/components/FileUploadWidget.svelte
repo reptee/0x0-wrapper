@@ -60,43 +60,23 @@
     );
   }
 
-  function onOverrideToggle(idx: number) {
-    return (enabled: boolean) => {
-      updateCandidate(idx, (candidate) => ({
-        ...candidate,
-        overrides: {
-          ...candidate.overrides,
-          enabled,
-          expiration: enabled ? candidate.overrides.expiration : null,
-          secret: enabled ? (candidate.overrides.secret ?? false) : null,
-        },
-      }));
-    };
-  }
+  function setOverride(idx: number, key: string) {
+    return (value: any) =>
+      updateCandidate(idx, (candidate) => {
+        let nextValue = value;
 
-  function onOverrideDateChange(idx: number) {
-    return (value: string) => {
-      const expiration = value ? new Date(`${value}T00:00:00Z`) : null;
-      updateCandidate(idx, (candidate) => ({
-        ...candidate,
-        overrides: {
-          ...candidate.overrides,
-          expiration,
-        },
-      }));
-    };
-  }
+        if (key == "expiration") {
+          nextValue = value ? new Date(`${value}T00:00:00Z`) : null;
+        }
 
-  function onOverrideSecretChange(idx: number) {
-    return (value: boolean) => {
-      updateCandidate(idx, (candidate) => ({
-        ...candidate,
-        overrides: {
-          ...candidate.overrides,
-          secret: value,
-        },
-      }));
-    };
+        return {
+          ...candidate,
+          overrides: {
+            ...candidate.overrides,
+            [key]: value,
+          },
+        };
+      });
   }
 
   function onDragEnter(event: DragEvent) {
@@ -182,9 +162,9 @@
           removeCandidate={() => {
             candidates = candidates.filter((_, i) => i !== idx);
           }}
-          onOverrideToggle={onOverrideToggle(idx)}
-          onOverrideDateChange={onOverrideDateChange(idx)}
-          onOverrideSecretChange={onOverrideSecretChange(idx)}
+          onOverrideToggle={setOverride(idx, "enabled")}
+          onOverrideDateChange={setOverride(idx, "expiration")}
+          onOverrideSecretChange={setOverride(idx, "secret")}
         />
       {/each}
       <li class="card">
