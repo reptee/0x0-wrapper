@@ -14,7 +14,11 @@ const load = (): UploadedFile[] => {
   if (!browser) {
     return [];
   }
-  return JSON.parse(localStorage.getItem(KEY) ?? "[]");
+  let files = JSON.parse(localStorage.getItem(KEY) ?? "[]") as UploadedFile[];
+  files.forEach((v, i, a) => {
+    a[i].url = new URL(v.url);
+  });
+  return files;
 };
 
 export const upload_index = writable<UploadedFile[]>(load());

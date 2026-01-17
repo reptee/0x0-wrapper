@@ -4,7 +4,6 @@
   import { upload_index } from "$lib/stores/UploadIndex";
 
   let { uploadedFile }: { uploadedFile: UploadedFile } = $props();
-  const url = new URL(uploadedFile.url);
   let expiry_date = "unknown";
 
   if (uploadedFile.expiration_epoch_ms) {
@@ -45,9 +44,9 @@
   <td>
     {(uploadedFile.size && formatBytes(uploadedFile.size)) || "unknown"}
   </td>
-  <td>{url.hostname}</td>
+  <td>{uploadedFile.url.hostname}</td>
   <td>{expiry_date}</td>
-  <td><a class="link" href={uploadedFile.url}>link</a></td>
+  <td><a class="link" href={uploadedFile.url.toString()}>link</a></td>
   <td><button class="remove" onclick={removeFile}>Remove</button></td>
 </tr>
 

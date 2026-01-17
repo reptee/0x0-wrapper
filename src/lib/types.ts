@@ -41,7 +41,7 @@ export type UploadedFile = {
   expiration_epoch_ms: number | null;
   token: string;
   upload_epoch_ms: number;
-  url: string; // TODO: change to URL
+  url: URL;
   mime: string;
 };
 

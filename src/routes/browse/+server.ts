@@ -14,8 +14,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
   form.set("delete", "");
   form.set("token", to_remove.token);
   let resp = await fetch(
-    // TODO: remove trim after changing the type to URL
-    to_remove.url.trim(),
+    to_remove.url,
     { method: "POST", body: form },
   );
 
