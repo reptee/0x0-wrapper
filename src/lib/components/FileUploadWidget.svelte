@@ -16,6 +16,7 @@
   let dragCounter = $state<number>(0);
   let isDragging = $state<boolean>(false);
   let fileInput = $state<HTMLInputElement | null>();
+  let isUploading = $state<boolean>(false);
 
   const previewMode = $derived<boolean>(candidates.length > 0);
 
@@ -126,6 +127,9 @@
   }
 
   function openPicker() {
+    if (isUploading) {
+      return;
+    }
     fileInput?.click();
   }
 
@@ -183,12 +187,31 @@
           onOverrideSecretChange={onOverrideSecretChange(idx)}
         />
       {/each}
-      <li class="card"><button onclick={openPicker}>➕</button></li>
       <li class="card">
         <button
+          id="add-button"
+          disabled={isUploading}
           onclick={(event) => {
+            openPicker();
             event.stopPropagation();
-            upload_files();
+          }}>➕</button
+        >
+      </li>
+      <li class="card">
+        <button
+          id="upload-button"
+          disabled={isUploading}
+          onclick={async (event) => {
+            event.stopPropagation();
+            if (isUploading) {
+              return;
+            }
+            isUploading = true;
+            try {
+              await upload_files();
+            } finally {
+              isUploading = false;
+            }
           }}>Upload</button
         >
       </li>
@@ -276,6 +299,12 @@
       border: none;
       background: transparent;
       font-size: 2rem;
+    }
+
+    & > button:disabled {
+      opacity: 0.45;
+      filter: grayscale(1);
+      cursor: not-allowed;
     }
   }
 
