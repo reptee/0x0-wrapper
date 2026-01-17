@@ -52,6 +52,8 @@ function mk_parameters(
   config: UploadConfig,
   overrides: UploadOverrides,
 ): { expiration_epoch_ms: number | null; secret: boolean | null } {
+  // console.log(config);
+  // console.log(overrides);
   let expiration_epoch_ms: number | null = null;
   let secret: boolean | null = null;
   if (config.expires instanceof Date) {
@@ -68,7 +70,7 @@ function mk_parameters(
     secret = overrides.secret;
   }
   const res = { secret, expiration_epoch_ms };
-  console.log(res);
+  // console.log(res);
   return res;
 }
 
@@ -87,7 +89,16 @@ export const POST: RequestHandler = async ({ request }) => {
 
   try {
     config = JSON.parse(configRaw);
+    config.expires = config.expires ? new Date(config.expires) : null;
     manifest = JSON.parse(manifestRaw);
+    manifest = manifest.map((v) => ({
+      overrides: {
+        ...v.overrides,
+        expiration: v.overrides.expiration
+          ? new Date(v.overrides.expiration)
+          : null,
+      },
+    }));
   } catch {
     return json({ error: "invalid JSON payload" }, { status: 400 });
   }
@@ -152,7 +163,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
       let res = await uploadFile(file, provider, expiration_epoch_ms, secret);
 
-      console.log(res);
+      // console.log(res);
       if (res instanceof Error) {
         return { ok: false, error: res.message };
       }

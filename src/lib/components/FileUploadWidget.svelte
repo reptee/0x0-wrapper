@@ -66,14 +66,14 @@
         let nextValue = value;
 
         if (key == "expiration") {
-          nextValue = value ? new Date(`${value}T00:00:00Z`) : null;
+          nextValue = value ? new Date(`${value}T00:00:00`) : null;
         }
 
         return {
           ...candidate,
           overrides: {
             ...candidate.overrides,
-            [key]: value,
+            [key]: nextValue,
           },
         };
       });
