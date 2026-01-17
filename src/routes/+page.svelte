@@ -15,8 +15,6 @@
   } from "$lib/types";
   import { onMount } from "svelte";
 
-  let error = $state<string | null>(null);
-
   let candidates = $state<UploadCandidate[]>([]);
   $inspect(candidates);
 
@@ -38,11 +36,6 @@
 
     form.set("config", JSON.stringify(uploadConfig));
 
-    if (candidates.length === 0) {
-      // TODO: report an error?
-      return new Error("No candidates for upload");
-    }
-
     // TODO: respect file limit?
     candidates.forEach(({ file }) => form.append("files", file, file.name));
     const manifest: UploadManifest = candidates.map(({ overrides }) => ({
@@ -57,15 +50,6 @@
     });
     console.log(manifest);
     console.log(uploadConfig);
-
-    if (!resp.ok) {
-      try {
-        error = await resp.text();
-      } catch (err) {
-        return err as Error;
-      }
-      return new Error(error);
-    }
 
     let uploaded: UploadFileRes[] = [];
     try {
