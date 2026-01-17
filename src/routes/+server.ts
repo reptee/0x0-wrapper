@@ -78,9 +78,9 @@ export const POST: RequestHandler = async ({ request }) => {
   const manifestRaw = body.get("manifest");
 
   if (typeof configRaw !== "string")
-    return json({ error: "missing config", status: 400 });
+    return json({ error: "missing config" }, { status: 400 });
   if (typeof manifestRaw !== "string")
-    return json({ error: "missing manifest", status: 400 });
+    return json({ error: "missing manifest" }, { status: 400 });
 
   let config: UploadConfig;
   let manifest: UploadManifest;
@@ -89,7 +89,7 @@ export const POST: RequestHandler = async ({ request }) => {
     config = JSON.parse(configRaw);
     manifest = JSON.parse(manifestRaw);
   } catch {
-    return json({ error: "invalid JSON payload", status: 400 });
+    return json({ error: "invalid JSON payload" }, { status: 400 });
   }
 
   const files = body
@@ -111,10 +111,10 @@ export const POST: RequestHandler = async ({ request }) => {
   // console.log(providers[provider_id]);
 
   if (typeof provider_id !== "number" || !providers[provider_id]?.url) {
-    return json({
-      error: `provider id expected to be natural up to ${providers.length}`,
-      status: 400,
-    });
+    return json(
+      { error: `provider id expected to be natural up to ${providers.length}` },
+      { status: 400 },
+    );
   }
 
   let provider = providers[provider_id];
@@ -183,6 +183,5 @@ export const POST: RequestHandler = async ({ request }) => {
     },
   );
 
-  // TODO: remove successfully uploaded files from the list on the client
   return json(await Promise.all(uploadedFilesPromises));
 };
