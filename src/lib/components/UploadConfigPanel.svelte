@@ -82,7 +82,7 @@
 
   #provider-selector,
   #expiry-date-selector,
-  #is-secret {
+  #is-secret-checkbox {
     display: inline;
     border-radius: 0.5rem;
     border: 1px solid #d6dae3;

@@ -4,11 +4,6 @@
   import { upload_index } from "$lib/stores/UploadIndex";
 
   let { uploadedFile }: { uploadedFile: UploadedFile } = $props();
-  let expiry_date = "unknown";
-
-  if (uploadedFile.expiration_epoch_ms) {
-    expiry_date = new Date(uploadedFile.expiration_epoch_ms).toLocaleString();
-  }
 
   // TODO: make button inactive until transaction is finished
   async function removeFile(event: Event) {
@@ -45,7 +40,7 @@
     {(uploadedFile.size && formatBytes(uploadedFile.size)) || "unknown"}
   </td>
   <td>{uploadedFile.url.hostname}</td>
-  <td>{expiry_date}</td>
+  <td>{new Date(uploadedFile.expiration_epoch_ms).toLocaleString()}</td>
   <td><a class="link" href={uploadedFile.url.toString()}>link</a></td>
   <td><button class="remove" onclick={removeFile}>Remove</button></td>
 </tr>
