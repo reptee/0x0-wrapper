@@ -9,7 +9,7 @@ import type {
 } from "$lib/types";
 import { calculate_file_retention, isProviderFull, providers } from "$lib";
 
-export async function uploadFile(
+async function uploadFile(
   file: File,
   provider: NullPointerProvider,
   expiration_epoch_ms: number | null = null,
@@ -37,7 +37,7 @@ export async function uploadFile(
     });
 
     if (!response.ok) {
-      throw new Error(
+      return new Error(
         `Upload failed: status=${response.status} status_text=${response.statusText}`,
       );
     }

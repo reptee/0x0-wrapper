@@ -69,8 +69,8 @@
   }
 
   dt {
-    // border-bottom: 1pt solid #3b82f6;
-    // border-left: 1pt solid #3b82f6;
+    /* border-bottom: 1pt solid #3b82f6; */
+    /* border-left: 1pt solid #3b82f6; */
     font-weight: bold;
     padding: 3pt;
     background: linear-gradient(135deg, #ebf3fe 0%, #ffffff 100%);
