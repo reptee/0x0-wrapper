@@ -5,7 +5,6 @@
 
   let { uploadedFile }: { uploadedFile: UploadedFile } = $props();
 
-  // TODO: make button inactive until transaction is finished
   async function removeFile(event: Event) {
     const confirmation = confirm(
       `Czy na pewno chcesz usunąć ${uploadedFile.name}?`,
@@ -26,7 +25,6 @@
         body: JSON.stringify(uploadedFile),
       },
     ).then((it) => it.json());
-    // TODO: remove from index only on success
     upload_index.update((list) =>
       list.filter(({ token }) => token != uploadedFile.token),
     );

@@ -82,8 +82,6 @@
     upload_index.update((files) => {
       return files.concat(uploads_good);
     });
-
-    // TODO: notification about successful upload and upload failureg
   }
 </script>
 

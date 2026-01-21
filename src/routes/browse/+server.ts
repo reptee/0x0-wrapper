@@ -11,8 +11,6 @@ export const DELETE: RequestHandler = async ({ request }) => {
   }
   console.log(to_remove);
 
-  // TODO: create a simple wrapper in a separate library with `upload`,
-  // `delete`, `reschedule`?
   let form = new FormData();
   form.set("delete", "");
   form.set("token", to_remove.token);
