@@ -90,11 +90,19 @@
     width: auto;
   }
 
-  input[type="checkbox"] {
-    transform: scale(1.5, 1.5);
+  #is-secret-checkbox {
+    height: 1.3rem;
+    width: 1.3rem;
+    vertical-align: middle;
   }
 
   .settings-card > div {
     margin-top: 10pt;
+  }
+  @media (pointer: coarse) {
+    #is-secret-checkbox {
+      height: 2rem;
+      width: 2rem;
+    }
   }
 </style>

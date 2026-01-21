@@ -168,4 +168,14 @@ file picker, but buttons inside the children themselves still work. -->
       text-align: left;
     }
   }
+
+  @media (pointer: coarse) {
+    input[type="checkbox"] {
+      height: 2rem;
+      width: 2rem;
+    }
+    input[type="date"] {
+      height: 2rem;
+    }
+  }
 </style>
