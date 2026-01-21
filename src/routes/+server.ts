@@ -32,8 +32,7 @@ export async function uploadFile(
       method: "POST",
       body: form,
       headers: {
-        // TODO: change UA
-        "User-Agent": "curl/a-unique-UA-hopefully",
+        "User-Agent": "curl/https://github.com/reptee/0x0-wrapper",
       },
     });
 
