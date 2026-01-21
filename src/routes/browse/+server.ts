@@ -9,7 +9,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
       { status: 500 },
     );
   }
-  console.log(to_remove);
+  // console.log(to_remove);
 
   let form = new FormData();
   form.set("delete", "");

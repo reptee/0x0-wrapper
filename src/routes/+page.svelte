@@ -54,14 +54,14 @@
       method: "POST",
       body: form,
     });
-    console.log(manifest);
-    console.log(uploadConfig);
+    // console.log(manifest);
+    // console.log(uploadConfig);
 
     let uploaded: UploadFileRes[] = [];
     try {
       uploaded = await resp.json();
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return err as Error;
     }
 
