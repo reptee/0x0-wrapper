@@ -42,7 +42,6 @@ export const provider_boop: NullPointerProviderFull = {
   max_size: 256 * 1024 * 1024,
 };
 
-// TODO: remove localhost
 export const provider_local: NullPointerProviderFull = {
   url: new URL("http://localhost:8080"),
   min_age: 30,
@@ -50,12 +49,9 @@ export const provider_local: NullPointerProviderFull = {
   max_size: 512 * 1024 * 1024,
 };
 
-export const providers: Array<NullPointerProvider> = [
-  provider_0x0,
-  provider_vern,
-  provider_boop,
-  provider_local,
-];
+export const providers: Array<NullPointerProvider> = import.meta.env.DEV
+  ? [provider_local, provider_0x0, provider_vern, provider_boop]
+  : [provider_0x0, provider_vern, provider_boop];
 
 // adapted from https://stackoverflow.com/a/18650828
 export function formatBytes(bytes: number, decimals: number = 2): string {
