@@ -14,7 +14,7 @@
   }
 </script>
 
-<div>
+<div class="uploads-wrapper">
   <table class="uploads-table">
     <thead>
       <tr>
@@ -60,5 +60,15 @@
   }
   :global(.uploads-table td) {
     padding: 0.3rem 1rem;
+  }
+
+  @media (pointer: coarse) {
+    .uploads-wrapper {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .uploads-table {
+      min-width: 800px;
+    }
   }
 </style>

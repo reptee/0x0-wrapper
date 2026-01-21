@@ -123,6 +123,11 @@
     flex: 1;
     padding: 5pt;
   }
+  @media (pointer: coarse) {
+    .panels-container {
+      flex-direction: column;
+    }
+  }
   .headline,
   .subheading {
     text-align: center;

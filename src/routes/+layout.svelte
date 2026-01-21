@@ -100,6 +100,7 @@
 
   .nav-links {
     list-style-type: none;
+    flex-wrap: wrap;
     display: flex;
     align-items: center;
     gap: 0.5rem;
