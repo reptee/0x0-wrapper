@@ -61,7 +61,7 @@
         };
 
         nixosModules.null-wrapper = import ./module.nix {
-          ibaza = packages.null-wrapper;
+          null-wrapper = packages.null-wrapper;
         };
 
         packages.default = packages.null-wrapper;
