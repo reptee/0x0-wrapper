@@ -8,16 +8,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            svelte-language-server
-            typescript-language-server
-            bun
-          ];
-        };
-        packages."0x0-wrapper" = pkgs.buildNpmPackage {
+        null-wrapper = pkgs.buildNpmPackage {
           pname = "0x0-wrapper";
           version = "0.0.1";
           src = ./.;
@@ -25,7 +16,7 @@
           npmDepsHash = "sha256-YGEph+rfJbkKPjvrab/eFDbrbEC3OdjHJEDK+m2IqAc=";
           # npmDepsHash = pkgs.lib.fakeHash;
           makeCacheWritable = true;
-          npmFlags = [ "--legacy-peer-deps" "--loglevel=verbose" ];
+          # npmFlags = [ "--legacy-peer-deps" "--loglevel=verbose" ];
           npmBuild = "npm run build";
           nativeBuildInputs = [ pkgs.makeWrapper ];
           installPhase = ''
@@ -41,5 +32,44 @@
             runHook postInstall
           '';
         };
+        vm-configuration = nixpkgs.lib.nixosSystem {
+          modules = [
+            ./vm.nix
+            (import ./module.nix { inherit null-wrapper; })
+            ({ config, ... }: {
+              services.null-wrapper.enable = true;
+              services.null-wrapper.port = 9999;
+              nixpkgs.hostPlatform = system;
+            })
+          ];
+        };
+        launch = pkgs.writeShellScript
+          "run-vm-with-ssh.sh"
+          ''
+            export QEMU_NET_OPTS="hostfwd=tcp::2221-:22,hostfwd=tcp::9999-:9999"
+            printf "QEMU_NET_OPTS=%s\n" $QEMU_NET_OPTS
+            ${vm-configuration.config.system.build.vm}/bin/run-nixos-vm
+          '';
+      in
+      rec {
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            svelte-language-server
+            typescript-language-server
+            bun
+          ];
+        };
+
+        nixosModules.null-wrapper = import ./module.nix {
+          ibaza = packages.null-wrapper;
+        };
+
+        packages.default = packages.null-wrapper;
+        packages.null-wrapper = null-wrapper;
+        apps.run-vm = {
+          type = "app";
+          program = "${launch}";
+        };
+
       });
 }
