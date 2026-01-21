@@ -33,7 +33,7 @@
 </script>
 
 <tr>
-  <td>{uploadedFile.name}</td>
+  <td class="file-name">{uploadedFile.name}</td>
   <td>
     {(uploadedFile.size && formatBytes(uploadedFile.size)) || "nieznany"}
   </td>
@@ -108,6 +108,10 @@
   }
   .remove {
     background: #d45500;
+  }
+
+  .file-name {
+    word-break: break-word;
   }
 
 </style>

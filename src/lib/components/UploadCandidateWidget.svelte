@@ -89,6 +89,9 @@ file picker, but buttons inside the children themselves still work. -->
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
+    & strong {
+      word-break: break-word;
+    }
   }
 
   .file-size {
