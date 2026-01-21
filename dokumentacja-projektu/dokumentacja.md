@@ -1,31 +1,30 @@
 ---
-title: "Dokumentacja techniczna strony cross-pointer"
+title: "Dokumentacja strony do przesyłania i udostępniania plików --- crosspointer"
 date: 2025-12-12
 lang: pl
+titlepage: true
+titlepage-logo: ./assets/0x0-logo.svg
+logo-width: 7cm
 author:
   - Aleksey Myshko
   - Andrii Yanishevskyi
 abstract: |
-  Przygotowywane przez studentów III roku kierunku Inżynieria i Analiza Danych
+  Przygotowane przez studentów III roku kierunku Inżynieria i Analiza Danych
 ---
 
 <!-- TODO:
-powinna być strona tytulowa
+- [x] powinna być strona tytulowa
+- [x] tytul powinien brzmieć «dokumentacja strony ...»
+- [x] celem projektu jest stworzenie strony ... z wykorzystaniem technologii
+  html/css/javascript
+- [x] grupa docelowa: skierowana do mniej technicznych polaków
+- [x] responsywność: dodać jakie rozdzielczości obsługujemy
 
-tytul powinien brzmieć «dokumentacja strony ...»
+- [x] mapa strona:
+  nie zaczynać od listy
+  «strona internetowa będzie się składała z następujących podstron»
 
-celem projektu jest stworzenie strony ... z wykorzystaniem technologii
-html/css/javascript
-
-grupa docelowa: skierowana do mniej technicznych polaków
-
-responsywność: dodać jakie rozdzielczości obsługujemy
-
-mapa strona:
-nie zaczynać od listy
-«strona internetowa będzie się składała z następujących podstron»
-
-obejrzenie strony dopiero po zrobieniu dokumentacji
+- [ ] obejrzenie strony dopiero po zrobieniu dokumentacji
 -->
 
 <!-- ZAWARTOŚĆ DOKUMENTACJI PROJEKTU (cz. I) -->
@@ -38,9 +37,9 @@ obejrzenie strony dopiero po zrobieniu dokumentacji
 promocja firmy, informowanie o usługach, sprzedaż produktów, edukacja, rozrywka)
 -->
 
-Strona ma na celu umożliwić użytkownikom przesyłanie dowolnych plików (które
-później będą dostępne globalnie), co pozwala na udostępnia dużej grupie osób
-dowolnych treści w łatwy sposób.
+Celem projektu jest stworzenie strony internetowej, która umożliwia użytkownikom
+przesyłanie dowolnych plików (które stają się dostępne globalnie), co pozwala na
+udostępnienie dużej grupie osób dowolnych treści w łatwy i szybki sposób.
 
 # Założenia projektowe
 
@@ -53,7 +52,9 @@ serwisie? Np. wizytówkowa, portal, serwis informacyjny itp.)
 
 Aplikacja ma na celu umożliwić użytkownikom przesyłanie dowolnych plików i
 uzyskanie linku do wysłanych treści.
+
 <!-- [^dowolnych] -->
+
 Przewidziane treści:
 
 - wysyłanie treści do jednego z trzech dostawców (<https://0x0.st/>,
@@ -74,8 +75,8 @@ oparciu o to dostosowanie ostatecznego wyglądu strony.
 -->
 
 Aplikacja ma przeznaczenie ogólne, ale przeważnie jest skierowana do
-użytkowników mniej technicznych, dla których wysłanie plików na serwis docelowy,
-stanowi kłopot.
+użytkowników mniej technicznych mówiących po polsku, dla których wysłanie plików
+na serwer docelowy może stanowić kłopot.
 
 ## Treści prezentowane na stronie.
 
@@ -91,7 +92,7 @@ Strona ma prezentować:
 - okno wysyłania wraz z informacjami dotyczącymi konkretnych dostawców
 - okno zarządzania wysłanych plików
 - polityka prywatności
-- strona opisująca serwis
+- strona z najczęstszymi pytaniami (tzw. FAQ)
 - strona z podziękowaniami
 
 ## Funkcjonalności strony
@@ -111,12 +112,12 @@ Na stronie się znajdą:
   «secret»[^secret]
 - informacje dotyczącymi konkretnych dostawców (minimalna i maksymalna retencja
   pliku, maksymalny rozmiar pliku)
-- manager wysłanych plików: możliwość usunięcia, przejrzenia, skopiowania linku
+- manager wysłanych plików: możliwość usunięcia, przejścia pod adres, skopiowania linku
 
 [^secret]: najlepiej zobaczyć to na przykładzie:
 
     - plik wysłany bez tego ustawienia: <https://0x0.st/KC_u.txt>
-    - plik wysłany z ustawionym polem `secret`: <https://0x0.st/s/rb0kENYZ97WZI8NkRpfBbw/KC_S.txt>
+    - plik wysłany z ustawionym nagłówkiem `secret`: <https://0x0.st/s/rb0kENYZ97WZI8NkRpfBbw/KC_S.txt>
 
     Jak widać główną różnicą jest to, że adres drugiego pliku trudno odgadnąć,
     gdyż domyślnie adres to tak naprawdę kolejny ID który używa szerszego alfabetu
@@ -129,17 +130,31 @@ Na stronie się znajdą:
 wyświetlać się dobrze).
 -->
 
-Urządzeniami docelowymi są komputery stacjonarne bądź laptopy, a także
-smartfony. Strona więc będzie się dostosowywała do rozmiaru ekranu urządzenia na
-którym jest wyświetlana.
+Urządzeniami docelowymi są komputery stacjonarne bądź laptopy o rodzielczości
+FullHD, a także urządzenia typu touch (smartfony, tablety, laptopy 2w1). Strona
+więc będzie się dostosowywała do rozmiaru ekranu urządzenia na którym jest
+wyświetlana.
+
+Na urządzeniu typu komputer nie zmienia wyglądu w zależności od rozdzielczości,
+natomiast w przypadku telefonów zmienia układ strony w menu wysłania i
+przeglądania wysłanych plików w celu poprawienia UX.
+
+Między innymi:
+
+- Menu nawigacyjne dzieli się na kilka wierszy
+- 2 panele pozwalające na ustawienie opcji wysłania oraz panel informacji o
+  stronie mieszczą się jeden pod innym, zamiast pozycjonowania obok siebie
+  (schemat poniżej)
+- Tabela wysłanych plików uzyskuje własność overflow, co pozwala ją przewijać
+  nie przewijając całej strony
+
+![Transformacja strony wysłania](/home/kibi/Projects/svelte-nullpointer/dokumentacja-projektu/assets/main-page-responsivity.png)
+
+![Transformacja strony przeglądania plików](/home/kibi/Projects/svelte-nullpointer/dokumentacja-projektu/assets/browse-page-filled.png)
 
 ## Wersje językowe strony
 
-<!--
-(W jakich wersjach językowych będzie dostępna strona).
--->
-
-Przewidywany jest wyłącznie język polski.
+Strona jest dostępna tylko i wyłącznie w języku polskim.
 
 ## Logo strony
 
@@ -147,7 +162,9 @@ Przewidywany jest wyłącznie język polski.
 (Czy już istnieje, czy będzie tworzone na potrzeby strony?).
 -->
 
-Będzie stworzone na potrzeby strony, na razie nie istnieje.
+Logo własnoręcznie na potrzeby projektu.
+
+![logo](./assets/0x0-logo.svg)
 
 ## Specyfikacja techniczna
 
@@ -163,14 +180,16 @@ Technologie wykorzystane do stworzenia strony:
 - [TypeScript](https://www.typescriptlang.org/) --- upraszcza opracowywanie
   poprzez dodanie prawdziwego systemu typów do języku JavaScript
 - [SCSS](https://sass-lang.com/documentation/syntax/) --- rozszerzona wersja CSS
-- [bun](https://bun.com/) --- to co bezpośrednia uruchamia aplikacje i pozwala
-  kontaktować się z nią, alternatywa Node.js.
+- [Node.js](https://bun.com/) --- to co bezpośrednia uruchamia serwer i pozwala
+  kontaktować się z nią.
 
 Technologie wykorzystane w celu opracowania projektu:
 
 - [język nix](https://nixos.org/) --- do stworzenia środowiska deweloperskiego
-  zawierającego wszystkie niezbędne narzędzia
-- [podman](https://podman.io/) --- do  uruchomienia lokalnej wersji 0x0, żeby
+  zawierającego wszystkie niezbędne narzędzia, także maszyny wirtualnej do
+  testowania strony oraz modułu [systemd](https://systemd.io/) do uruchomienia
+  w środowisku docelowym.
+- [podman](https://podman.io/) --- do ustawienia lokalnej instancji 0x0, żeby
   nie spamować dostawców w trakcie opracowania
 
 zewnętrzne API:
@@ -186,12 +205,14 @@ zewnętrzne API:
 listy hierarchicznej.
 -->
 
+Strona internetowa będzie się składała z następujących podstron:
+
 - `/` --- korzeń, zawiera okno wysyłania plików, informacje o dostawcy,
   możliwość ustawienia czasu ekspiracji oraz opcji «secret»
-- `/browse` --- przegląd wysłanych plików
-- `/tos` --- polityka prywatności / warunki korzystania z serwisu
-- `/credits` --- podziękowania
-- `/about` --- o stronie
+- `/browse` --- przegląd wysłanych plików,
+- `/FAQ` --- najczęściej zadawane pytania, pozwoliliśmy sobie trochę humoru,
+- `/credits` --- podziękowania,
+- `/privacy-policy` --- polityka prywatności.
 
 # Zawartość strony głównej
 
@@ -234,10 +255,10 @@ Przykład funkcji po stronie serwera odpowiedzialnej za wysłanie plików do
 dostawcy:
 
 ```typescript
-export async function uploadFile(
+async function uploadFile(
   file: File,
   provider: NullPointerProvider,
-  expiration_epoch_s: number | null = null,
+  expiration_epoch_ms: number | null = null,
   secret: boolean | null = null,
 ): Promise<Response | Error> {
   const form = new FormData();
@@ -248,8 +269,8 @@ export async function uploadFile(
     form.append("secret", "");
   }
 
-  if (expiration_epoch_s) {
-    form.append("expires", Math.floor(expiration_epoch_s * 1000).toString());
+  if (expiration_epoch_ms) {
+    form.append("expires", Math.floor(expiration_epoch_ms).toString());
   }
 
   try {
@@ -257,13 +278,12 @@ export async function uploadFile(
       method: "POST",
       body: form,
       headers: {
-        // TODO: change UA
-        "User-Agent": "curl/a-unique-UA-hopefully",
+        "User-Agent": "curl/https://github.com/reptee/0x0-wrapper",
       },
     });
 
     if (!response.ok) {
-      throw new Error(
+      return new Error(
         `Upload failed: status=${response.status} status_text=${response.statusText}`,
       );
     }
@@ -273,3 +293,41 @@ export async function uploadFile(
   }
 }
 ```
+
+## Wykorzystanie AI do stworzenia strony
+
+W trakcie tworzenia strony autorzy konsultowali się z ChatGPT w celu poprawienia
+błędów, poszerzenia wiedzy itd. Pytania zadawane botu SI nie zostały zanotowane,
+ponieważ wskazówki zawierające kod nie były wstawiane bez zmian, lecz pisane
+przez autorów uwzględniając zaproponowane rozwiązanie.
+
+Czasami jednak używano rozwiązań metodą kopiuj-wklej. Zgodnie z wymaganiami
+podajemy prompty do SI, można ich również znaleźć na
+[stronie projektu](https://github.com/reptee/0x0-wrapper/commits/svelte/) na
+GitHub w historii migawek git szukając `ai-generated` (np. za pomocą
+`git log --grep "ai-" HEAD`{.bash}).
+
+- (ai-produced) feat: style the table
+
+  > - Can you replicate this table style \[codex-clipboard-sIFiJw.png 800x524\] in src/routes/browse/+page.svelte. Mark delete button as blue, and if button is disabled, mark it red
+  > - Put the necessary part in src/lib/components/FileEntry.svelte, because the rows are defined here
+
+- (ai-produced) feat: style the navbar
+
+  > - Style the navbar. Make it rounded on the right and left, put the logo src/lib/assets/0x0-logo.svg before the Upload button and make it a single button.
+  > - I changed my mind, make it light theme (colors a bit darker than table's) and make the current tab highlighted
+  > - Don't always highlight the `[logo] Upload`
+
+- (ai-generated) disable buttons while uploading
+
+  > - I tried disabling add and upload buttons at src/lib/components/FileUploadWidget.svelte:200, but for some reason it does not work. Your task is to figure out why, and propose a compact solution, ideally not changing outside the component.
+  > - Maybe not a spinner, but add graying the buttons out when isUploading
+
+- (ai-generated) dodaj politykę prywatności
+
+  > - Write a privacy policy under routes privacy-policy +page.svelte. It should be in polish, should mention that files sent to buffer server are only sent because direct post requests are not possible, and that files are only stored in memory for the time of transfer. Also say that for file retention periods and TOS users need to consult the respective services' privacy policies
+  > - Mention that localStorage is used to store information about uploaded files, and that this information is ONLY stored on the client side
+
+- (ai-generated) polskie tłumaczenie
+
+  > - Przetłumacz wszystkie treści na stronie które nie są obecnie w polskim na polski. Nie tłumacz nazw w kodzie czy komentarzy, tylko treści które widzi użytkownik.
