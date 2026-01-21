@@ -3,8 +3,8 @@ title: "Dokumentacja strony do przesyłania i udostępniania plików --- crosspo
 date: 2025-12-12
 lang: pl
 titlepage: true
-titlepage-logo: ./assets/0x0-logo.png
-logo-width: 7cm
+titlepage-logo: ./assets/wmit_logo.pdf
+logo-width: 10cm
 author:
   - Aleksey Myshko
   - Andrii Yanishevskyi
