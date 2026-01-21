@@ -17,17 +17,17 @@
     class:active={$page.url.pathname === "/"}
   >
     <img src={logo} alt="Logo 0x0" />
-    <span>Przesyłanie</span>
+    <span>Wyślij</span>
   </a>
   <ul class="nav-links">
     <li>
       <a
         href="/browse"
-        class:active={$page.url.pathname === "/browse"}>Przegląd wysłanych plików</a
+        class:active={$page.url.pathname === "/browse"}>Przegląd</a
       >
     </li>
     <li>
-      <a href="/FAQ" class:active={$page.url.pathname === "/FAQ"}>Najczęstsze pytania</a>
+      <a href="/FAQ" class:active={$page.url.pathname === "/FAQ"}>FAQ</a>
     </li>
     <li>
       <a href="/credits" class:active={$page.url.pathname === "/credits"}
