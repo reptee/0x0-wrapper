@@ -16,6 +16,13 @@
       '';
     };
 
+    host = lib.mkOption {
+      type = lib.types.str;
+      description = ''
+        Value of HOST variable exposed to node server.
+      '';
+    };
+
     group = lib.mkOption {
       type = lib.types.str;
       default = "null-wrapper";
@@ -45,6 +52,8 @@
         after = [ "network-online.target" ];
         environment = {
           PORT = "${builtins.toString cfg.port}";
+          HOST = "${cfg.host}";
+          BODY_SIZE_LIMIT = "3G";
         };
         serviceConfig = {
           ExecStart = ''
