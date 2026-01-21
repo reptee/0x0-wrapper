@@ -39,7 +39,8 @@
             ({ config, ... }: {
               services.null-wrapper.enable = true;
               services.null-wrapper.port = 9999;
-              services.null-wrapper.host = "localhost";
+              services.null-wrapper.host = "0.0.0.0";
+              services.null-wrapper.origin = "http://localhost:9999";
               nixpkgs.hostPlatform = system;
             })
           ];

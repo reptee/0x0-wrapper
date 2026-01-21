@@ -23,6 +23,14 @@
       '';
     };
 
+    origin = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = ''
+        Optional ORIGIN for SvelteKit. Leave null to let the server infer it.
+      '';
+    };
+
     group = lib.mkOption {
       type = lib.types.str;
       default = "null-wrapper";
@@ -54,6 +62,8 @@
           PORT = "${builtins.toString cfg.port}";
           HOST = "${cfg.host}";
           BODY_SIZE_LIMIT = "3G";
+        } // lib.optionalAttrs (cfg.origin != null) {
+          ORIGIN = cfg.origin;
         };
         serviceConfig = {
           ExecStart = ''
