@@ -56,13 +56,13 @@
     background: #eef2ff;
   }
 
-  .link {
+  .link,
+  .remove {
     display: inline-flex;
     justify-content: center;
     align-items: center;
     margin: auto;
     min-width: 4.25rem;
-    background: #2563eb;
     color: #fff;
     border: none;
     padding: 0.35rem 0.65rem;
@@ -85,23 +85,6 @@
       transform: translateY(0);
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
-  }
-
-  .remove {
-    display: block;
-    margin: auto;
-    background: #D45500;
-    color: #fff;
-    border: none;
-    padding: 0.45rem 0.75rem;
-    border-radius: 999px;
-    cursor: pointer;
-    font-weight: 600;
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
-    transition:
-      transform 150ms ease,
-      box-shadow 150ms ease,
-      background 150ms ease;
     &:hover:not(:disabled) {
       transform: translateY(-1px);
       box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
@@ -119,4 +102,12 @@
       opacity: 0.9;
     }
   }
+
+  .link {
+    background: #2563eb;
+  }
+  .remove {
+    background: #d45500;
+  }
+
 </style>
