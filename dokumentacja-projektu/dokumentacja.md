@@ -3,7 +3,7 @@ title: "Dokumentacja strony do przesyłania i udostępniania plików --- crosspo
 date: 2025-12-12
 lang: pl
 titlepage: true
-titlepage-logo: ./assets/0x0-logo.svg
+titlepage-logo: ./assets/0x0-logo.png
 logo-width: 7cm
 author:
   - Aleksey Myshko
@@ -164,7 +164,7 @@ Strona jest dostępna tylko i wyłącznie w języku polskim.
 
 Logo własnoręcznie na potrzeby projektu.
 
-![logo](./assets/0x0-logo.svg)
+![logo](./assets/0x0-logo.png)
 
 ## Specyfikacja techniczna
 
