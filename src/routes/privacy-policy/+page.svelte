@@ -45,4 +45,14 @@
     margin: 0 auto;
     padding: 0 1rem;
   }
+  h1,
+  h2 {
+    border-radius: 0.75rem;
+    padding: 3pt;
+    background: linear-gradient(135deg, #ebf3fe 0%, #ffffff 100%);
+  }
+
+  h1 {
+    padding: 5pt;
+  }
 </style>

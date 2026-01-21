@@ -25,7 +25,7 @@
       <a href="https://svelte.dev/">Svelte</a> oraz
       <a href="https://svelte.dev/docs/kit/introduction">SvelteKit</a>
     </li>
-    <li>hosting plików <a href="https://git.0x0.st/mia/0x0">0x0</a></li>
+    <li>Hosting plików <a href="https://git.0x0.st/mia/0x0">0x0</a></li>
     <li><a href="https://www.typescriptlang.org/">TypeScript</a></li>
     <li><a href="https://sass-lang.com/documentation/syntax/">SCSS</a></li>
   </ul>
@@ -48,9 +48,9 @@
 
   h2 {
     padding: 1rem;
-    background: #dfe3eb;
     border-radius: 100pt;
     display: inline-block;
+    background: linear-gradient(135deg, #ebf3fe 0%, #ffffff 100%);
   }
 
   .content {
