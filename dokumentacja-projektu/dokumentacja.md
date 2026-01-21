@@ -76,7 +76,7 @@ oparciu o to dostosowanie ostatecznego wyglądu strony.
 
 Aplikacja ma przeznaczenie ogólne, ale przeważnie jest skierowana do
 użytkowników mniej technicznych mówiących po polsku, dla których wysłanie plików
-na serwer docelowy może stanowić kłopot.
+na serwer docelowy za pośrednictwem konsoli może stanowić kłopot.
 
 ## Treści prezentowane na stronie.
 
@@ -90,10 +90,10 @@ itp.). Czy na stronie będzie zakładka z aktualnościami?
 Strona ma prezentować:
 
 - okno wysyłania wraz z informacjami dotyczącymi konkretnych dostawców
-- okno zarządzania wysłanych plików
-- polityka prywatności
-- strona z najczęstszymi pytaniami (tzw. FAQ)
-- strona z podziękowaniami
+- okno zarządzania wysłanymi plikami
+- politykę prywatności
+- podstronę z najczęstszymi pytaniami (tzw. FAQ)
+- podstronę z podziękowaniami
 
 ## Funkcjonalności strony
 
@@ -108,9 +108,9 @@ itp.), wybór kolorystki i rozwiązań graficznych.
 
 Na stronie się znajdą:
 
-- okno wysyłania: ustawienie czasu ekspiracji, wybór dostawcy, ustawienie
+- narzędzie do wysyłania: ustawienie czasu ekspiracji, wybór dostawcy, ustawienie
   «secret»[^secret]
-- informacje dotyczącymi konkretnych dostawców (minimalna i maksymalna retencja
+- informacje dotyczące konkretnych dostawców (minimalna i maksymalna retencja
   pliku, maksymalny rozmiar pliku)
 - manager wysłanych plików: możliwość usunięcia, przejścia pod adres, skopiowania linku
 
@@ -119,9 +119,9 @@ Na stronie się znajdą:
     - plik wysłany bez tego ustawienia: <https://0x0.st/KC_u.txt>
     - plik wysłany z ustawionym nagłówkiem `secret`: <https://0x0.st/s/rb0kENYZ97WZI8NkRpfBbw/KC_S.txt>
 
-    Jak widać główną różnicą jest to, że adres drugiego pliku trudno odgadnąć,
-    gdyż domyślnie adres to tak naprawdę kolejny ID który używa szerszego alfabetu
-    niż 0-9
+    Jak widać główną różnicą jest to, że adres drugiego pliku jest o wiele
+    trudniej odgadnąć, wówczas gdy domyślnie adres to tak naprawdę kolejny ID który
+    używa szerszego alfabetu niż 0-9
 
 ## Responsywność strony
 
@@ -148,9 +148,9 @@ Między innymi:
 - Tabela wysłanych plików uzyskuje własność overflow, co pozwala ją przewijać
   nie przewijając całej strony
 
-![Transformacja strony wysłania](/home/kibi/Projects/svelte-nullpointer/dokumentacja-projektu/assets/main-page-responsivity.png)
+![Transformacja strony wysłania](assets/main-page-responsivity.png)
 
-![Transformacja strony przeglądania plików](/home/kibi/Projects/svelte-nullpointer/dokumentacja-projektu/assets/browse-page-filled.png)
+![Transformacja strony przeglądania plików](assets/browse-page-filled.png)
 
 ## Wersje językowe strony
 
@@ -164,7 +164,7 @@ Strona jest dostępna tylko i wyłącznie w języku polskim.
 
 Logo własnoręcznie na potrzeby projektu.
 
-![logo](./assets/0x0-logo.png)
+![Logo](./assets/0x0-logo.png)
 
 ## Specyfikacja techniczna
 
@@ -185,16 +185,16 @@ Technologie wykorzystane do stworzenia strony:
 
 Technologie wykorzystane w celu opracowania projektu:
 
-- [język nix](https://nixos.org/) --- do stworzenia środowiska deweloperskiego
+- [Język nix](https://nixos.org/) --- do stworzenia środowiska deweloperskiego
   zawierającego wszystkie niezbędne narzędzia, także maszyny wirtualnej do
   testowania strony oraz modułu [systemd](https://systemd.io/) do uruchomienia
   w środowisku docelowym.
-- [podman](https://podman.io/) --- do ustawienia lokalnej instancji 0x0, żeby
+- [Podman](https://podman.io/) --- do ustawienia lokalnej instancji 0x0, żeby
   nie spamować dostawców w trakcie opracowania
 
-zewnętrzne API:
+Zewnętrzne API wykorzystane w projekcie:
 
-- serwis [0x0 (null pointer)](https://git.0x0.st/mia/0x0) --- projekt open-source pozwalający
+- Serwis [0x0 (null pointer)](https://git.0x0.st/mia/0x0) --- projekt open-source pozwalający
   każdemu uruchomić własną kopię. Również ma kilka zewnętrznych instancji
   uruchomionych przez osób trzecich.
 
@@ -224,13 +224,13 @@ odnośnikami do mediów społecznościowych. Wskazać tagi, które będą wykorz
 do oznaczenia poszczególnych treści.
 -->
 
-Strona główna zawiera okno wysłanie, które swoją drogą zawiera trzy widgety:
+Strona główna zawiera okno wysłania, które swoją drogą zawiera trzy widgety:
 
 - widget zawierające załączone pliki gotowe do wysłanie razem z przyciskami
-  dodania kolejnych plików oraz bezpośrednia wysłania. Każdy załączony plik
-  także ma możliwość nadpisywania czasu ekspiracji (`div`,
+  dodania kolejnych plików oraz bezpośrednio wysłania. Każdy załączony plik
+  także ma możliwość nadpisywania czasu wygaśnięcia (`div`,
   `input type="checkbox`, `input type="file"`, `input type="date"`)
-- widget z ustawieniami wysłania: wybór dostawcy, data ekspiracji, ustawienie
+- widget z ustawieniami wysłania: wybór dostawcy, data wygaśnięcia, ustawienie
   «secret» (`div`, `input type="checkbox`, `input type="date"`, `select`)
 - widget z informacjami o wybranym dostawcy (`div`, `ul`, `a`)
 
