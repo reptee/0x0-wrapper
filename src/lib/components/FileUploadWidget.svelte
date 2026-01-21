@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isProviderFull } from "$lib";
+  import { formatBytes, isProviderFull } from "$lib";
   import type { NullPointerProvider, UploadCandidate } from "$lib/types";
   import UploadCandidateWidget from "./UploadCandidateWidget.svelte";
 
@@ -123,9 +123,9 @@
 
   let max_size = $derived.by(() => {
     if (isProviderFull(provider)) {
-      return provider.max_size;
+      return formatBytes(provider.max_size);
     } else {
-      return 256; // conservative assumption
+      return "unknown";
     }
   });
 </script>
@@ -153,7 +153,7 @@
 >
   {#if !previewMode}
     <p class="drag-here">Drag files here or click to select</p>
-    <p class="max-size">Maximum size: {max_size} MiB</p>
+    <p class="max-size">Maximum size: {max_size}</p>
   {:else}
     <ul class="preview-list">
       {#each candidates as candidate, idx}

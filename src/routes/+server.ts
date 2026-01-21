@@ -138,8 +138,8 @@ export const POST: RequestHandler = async ({ request }) => {
       let now = Date.now();
 
       if (isProviderFull(provider)) {
-        const file_size_MiB = file.size / 1024 / 1024;
-        if (file_size_MiB > provider.max_size) {
+        const file_size_bytes = file.size;
+        if (file_size_bytes > provider.max_size) {
           return {
             ok: false,
             error: "file size exceeds maximum file size allowed by provider",
@@ -150,7 +150,7 @@ export const POST: RequestHandler = async ({ request }) => {
           provider.min_age,
           provider.max_age,
           provider.max_size,
-          file_size_MiB,
+          file_size_bytes,
         );
 
         estimated_expiration_epoch_ms = Math.floor(

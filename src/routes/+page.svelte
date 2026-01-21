@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { providers } from "$lib";
+  import { isProviderFull, providers } from "$lib";
   import FileUploadWidget from "$lib/components/FileUploadWidget.svelte";
   import UploadConfigPanel from "$lib/components/UploadConfigPanel.svelte";
   import UploadInfoPanel from "$lib/components/UploadInfoPanel.svelte";
@@ -30,14 +30,20 @@
 
   $inspect(uploadConfig);
 
-
   async function upload_files(): Promise<Error | void> {
     let form = new FormData();
 
     form.set("config", JSON.stringify(uploadConfig));
 
-    // TODO: respect file limit?
-    candidates.forEach(({ file }) => form.append("files", file, file.name));
+    candidates.forEach(({ file }, i) => {
+      // Korekta -1024B była wyznaczona empirycznie. Nie da się np. przesłać
+      // dokładnie 512MiB, natomiast da się przesłać plik rozmiaru (512MiB - 1KiB)
+      if (isProviderFull(provider) && file.size > provider.max_size - 1024) {
+        candidates[i].upload_failure = "Plik jest za duży";
+        return;
+      }
+      form.append("files", file, file.name);
+    });
     const manifest: UploadManifest = candidates.map(({ overrides }) => ({
       overrides,
     }));

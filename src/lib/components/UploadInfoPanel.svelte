@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isProviderFull } from "$lib";
+  import { formatBytes, isProviderFull } from "$lib";
   import type { NullPointerProvider } from "$lib/types";
 
   let { provider }: { provider: NullPointerProvider } = $props();
@@ -7,7 +7,7 @@
   let maxFileSize = $derived.by(() => {
     if (!isProviderFull(provider)) return "unknown";
 
-    return `${provider.max_size.toString()} MiB`;
+    return formatBytes(provider.max_size);
   });
 
   let age = $derived.by(() => {
