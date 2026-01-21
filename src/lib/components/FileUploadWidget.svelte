@@ -125,7 +125,7 @@
     if (isProviderFull(provider)) {
       return formatBytes(provider.max_size);
     } else {
-      return "unknown";
+      return "nieznany";
     }
   });
 </script>
@@ -152,8 +152,8 @@
   }}
 >
   {#if !previewMode}
-    <p class="drag-here">Drag files here or click to select</p>
-    <p class="max-size">Maximum size: {max_size}</p>
+    <p class="drag-here">Przeciągnij pliki tutaj lub kliknij, aby wybrać</p>
+    <p class="max-size">Maksymalny rozmiar: {max_size}</p>
   {:else}
     <ul class="preview-list">
       {#each candidates as candidate, idx}
@@ -192,7 +192,7 @@
             } finally {
               isUploading = false;
             }
-          }}>Upload</button
+          }}>Prześlij</button
         >
       </li>
     </ul>

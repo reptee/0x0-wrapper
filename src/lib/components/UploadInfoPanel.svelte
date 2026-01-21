@@ -5,33 +5,33 @@
   let { provider }: { provider: NullPointerProvider } = $props();
 
   let maxFileSize = $derived.by(() => {
-    if (!isProviderFull(provider)) return "unknown";
+    if (!isProviderFull(provider)) return "nieznany";
 
     return formatBytes(provider.max_size);
   });
 
   let age = $derived.by(() => {
-    if (!isProviderFull(provider)) return { min: "unknown", max: "unknown" };
+    if (!isProviderFull(provider)) return { min: "nieznany", max: "nieznany" };
 
     return {
-      min: `${provider.min_age} days`,
-      max: `${provider.max_age} days`,
+      min: `${provider.min_age} dni`,
+      max: `${provider.max_age} dni`,
     };
   });
 </script>
 
 <div class="information-card">
-  <header><span class="icon">ℹ️</span> provider information</header>
+  <header><span class="icon">ℹ️</span> informacje o dostawcy</header>
   <ul>
-    <li><span>Maximum file size: {maxFileSize}</span></li>
+    <li><span>Maksymalny rozmiar pliku: {maxFileSize}</span></li>
     <li>
       <span>
-        Provider home page:
+        Strona dostawcy:
         <a href={provider.url.toString()}>{provider.url}</a>
       </span>
     </li>
-    <li><span>Uploaded file minimum retention: {age.min}</span></li>
-    <li><span>Uploaded file maximum retention: {age.max}</span></li>
+    <li><span>Minimalny czas przechowywania pliku: {age.min}</span></li>
+    <li><span>Maksymalny czas przechowywania pliku: {age.max}</span></li>
   </ul>
 </div>
 

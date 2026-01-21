@@ -35,12 +35,12 @@
 <tr>
   <td>{uploadedFile.name}</td>
   <td>
-    {(uploadedFile.size && formatBytes(uploadedFile.size)) || "unknown"}
+    {(uploadedFile.size && formatBytes(uploadedFile.size)) || "nieznany"}
   </td>
   <td>{uploadedFile.url.hostname}</td>
   <td>{new Date(uploadedFile.expiration_epoch_ms).toLocaleString()}</td>
   <td><a class="link" href={uploadedFile.url.toString()}>link</a></td>
-  <td><button class="remove" onclick={removeFile}>Remove</button></td>
+  <td><button class="remove" onclick={removeFile}>Usuń</button></td>
 </tr>
 
 <style lang="scss">

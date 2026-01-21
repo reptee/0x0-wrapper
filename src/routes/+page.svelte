@@ -93,9 +93,9 @@
 
 <section class="main-panel">
   <div>
-    <header class="headline">Upload and Share Files</header>
+    <header class="headline">Przesyłaj i udostępniaj pliki</header>
     <p class="subheading">
-      Private file uploader with support for multiple services.
+      Prywatne narzędzie do przesyłania plików z obsługą wielu serwisów.
     </p>
     <div class="upload">
       <FileUploadWidget bind:candidates {upload_files} {provider}

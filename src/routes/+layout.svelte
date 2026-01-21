@@ -16,29 +16,29 @@
     class="brand-button"
     class:active={$page.url.pathname === "/"}
   >
-    <img src={logo} alt="0x0 logo" />
-    <span>Upload</span>
+    <img src={logo} alt="Logo 0x0" />
+    <span>Przesyłanie</span>
   </a>
   <ul class="nav-links">
     <li>
       <a
         href="/browse"
-        class:active={$page.url.pathname === "/browse"}>Browse sent files</a
+        class:active={$page.url.pathname === "/browse"}>Przegląd wysłanych plików</a
       >
     </li>
     <li>
-      <a href="/FAQ" class:active={$page.url.pathname === "/FAQ"}>FAQ</a>
+      <a href="/FAQ" class:active={$page.url.pathname === "/FAQ"}>Najczęstsze pytania</a>
     </li>
     <li>
       <a href="/credits" class:active={$page.url.pathname === "/credits"}
-        >Credits</a
+        >Podziękowania</a
       >
     </li>
     <li>
       <a
         href="/privacy-policy"
         class:active={$page.url.pathname === "/privacy-policy"}
-        >Privacy policy</a
+        >Polityka prywatności</a
       >
     </li>
   </ul>

@@ -19,9 +19,9 @@
 </script>
 
 <div class="settings-card">
-  <header><span class="icon">⚙️</span> settings</header>
+  <header><span class="icon">⚙️</span> ustawienia</header>
   <div>
-    <span>Expiry date (optional): </span>
+    <span>Data wygaśnięcia (opcjonalnie): </span>
     <input
       type="date"
       name="Expiry date"
@@ -34,7 +34,7 @@
     />
   </div>
   <div>
-    <span>Make url hard to guess?</span>
+    <span>Utrudnić odgadnięcie adresu URL?</span>
     <input
       type="checkbox"
       name="Secret"
@@ -43,7 +43,7 @@
     />
   </div>
   <div>
-    <span>Provider: </span>
+    <span>Dostawca: </span>
     <select
       id="provider-selector"
       name="0x0 provider"

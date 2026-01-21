@@ -9,7 +9,7 @@
 
   <h2>Przesyłanie plików</h2>
   <p>
-    Pliki przesyłane do serwera buforującego (buffer server) są wysyłane
+    Pliki przesyłane do serwera buforującego są wysyłane
     wyłącznie dlatego, że bezpośrednie żądania POST nie są możliwe w danym
     scenariuszu. Pliki są przechowywane tylko w pamięci na czas transferu, nie
     są zapisywane na dysku i nie są udostępniane komukolwiek poza serwerem

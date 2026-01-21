@@ -45,12 +45,12 @@ file picker, but buttons inside the children themselves still work. -->
       onchange={(event) =>
         onOverrideToggle((event.currentTarget as HTMLInputElement).checked)}
     />
-    Enable per-file overrides
+    Włącz ustawienia dla pojedynczego pliku
   </label>
   {#if candidate.overrides.enabled}
     <div class="override-fields" transition:slide>
       <label>
-        <span>Expiry date</span>
+        <span>Data wygaśnięcia</span>
         <input
           type="date"
           value={formatDateInputValue(candidate.overrides.expiration)}
@@ -69,12 +69,12 @@ file picker, but buttons inside the children themselves still work. -->
               (event.currentTarget as HTMLInputElement).checked,
             )}
         />
-        <span>Mark as secret</span>
+        <span>Oznacz jako sekret</span>
       </label>
     </div>
   {/if}
   {#if candidate.upload_failure}
-    <p class="upload-failure">Error: {candidate.upload_failure}</p>
+    <p class="upload-failure">Błąd: {candidate.upload_failure}</p>
   {/if}
 </li>
 
