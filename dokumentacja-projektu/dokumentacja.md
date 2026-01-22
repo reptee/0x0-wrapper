@@ -10,6 +10,8 @@ author:
   - Andrii Yanishevskyi
 abstract: |
   Przygotowane przez studentów III roku kierunku Inżynieria i Analiza Danych
+   
+  Link do strony: <https://null.crii.xyz>
 ---
 
 <!-- TODO:
@@ -147,6 +149,7 @@ Między innymi:
   (schemat poniżej)
 - Tabela wysłanych plików uzyskuje własność overflow, co pozwala ją przewijać
   nie przewijając całej strony
+- Checkboxy stają się większe na urządzeniach mobilnych
 
 ![Transformacja strony wysłania](assets/main-page-responsivity.png)
 
@@ -180,8 +183,8 @@ Technologie wykorzystane do stworzenia strony:
 - [TypeScript](https://www.typescriptlang.org/) --- upraszcza opracowywanie
   poprzez dodanie prawdziwego systemu typów do języku JavaScript
 - [SCSS](https://sass-lang.com/documentation/syntax/) --- rozszerzona wersja CSS
-- [Node.js](https://bun.com/) --- to co bezpośrednia uruchamia serwer i pozwala
-  kontaktować się z nią.
+- [Node.js](https://nodejs.org) --- to co bezpośrednio uruchamia serwer i pozwala
+  kontaktować się z nim.
 
 Technologie wykorzystane w celu opracowania projektu:
 
@@ -305,7 +308,8 @@ Czasami jednak używano rozwiązań metodą kopiuj-wklej. Zgodnie z wymaganiami
 podajemy prompty do SI, można ich również znaleźć na
 [stronie projektu](https://github.com/reptee/0x0-wrapper/commits/svelte/) na
 GitHub w historii migawek git szukając `ai-generated` (np. za pomocą
-`git log --grep "ai-" HEAD`{.bash}).
+`git log --grep "ai-" HEAD`{.bash} po klonowaniu repozytorium do lokalnego
+katalogu).
 
 - (ai-produced) feat: style the table
 
@@ -331,3 +335,8 @@ GitHub w historii migawek git szukając `ai-generated` (np. za pomocą
 - (ai-generated) polskie tłumaczenie
 
   > - Przetłumacz wszystkie treści na stronie które nie są obecnie w polskim na polski. Nie tłumacz nazw w kodzie czy komentarzy, tylko treści które widzi użytkownik.
+
+# Publikowanie
+
+Strona została umieszczona na domenie której jesteśmy właścicielami. Do
+utrzymania strony skorzystano z hostinga [HETZNER](https://www.hetzner.com/).
