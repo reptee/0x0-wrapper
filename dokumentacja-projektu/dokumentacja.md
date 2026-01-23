@@ -5,6 +5,8 @@ lang: pl
 titlepage: true
 titlepage-logo: ./assets/wmit_logo.pdf
 logo-width: 10cm
+toc: true
+toc-own-page: true
 author:
   - Aleksey Myshko
   - Andrii Yanishevskyi
@@ -14,7 +16,9 @@ abstract: |
   Link do strony: <https://null.crii.xyz>
 ---
 
-<!-- TODO:
+<!-- nie usuwać starego sprawozdania, dodać nowe -->
+
+<!-- 
 - [x] powinna być strona tytulowa
 - [x] tytul powinien brzmieć «dokumentacja strony ...»
 - [x] celem projektu jest stworzenie strony ... z wykorzystaniem technologii
@@ -52,8 +56,8 @@ udostępnienie dużej grupie osób dowolnych treści w łatwy i szybki sposób.
 serwisie? Np. wizytówkowa, portal, serwis informacyjny itp.)
 -->
 
-Aplikacja ma na celu umożliwić użytkownikom przesyłanie dowolnych plików i
-uzyskanie linku do wysłanych treści.
+Strona ma na celu umożliwić użytkownikom przesyłanie dowolnych plików i
+uzyskanie linku do wysłanych treści
 
 <!-- [^dowolnych] -->
 
@@ -76,11 +80,12 @@ dla dzieci. Niezmiernie ważne jest więc klarowne określenie grupy docelowej i
 oparciu o to dostosowanie ostatecznego wyglądu strony.
 -->
 
-Aplikacja ma przeznaczenie ogólne, ale przeważnie jest skierowana do
-użytkowników mniej technicznych mówiących po polsku, dla których wysłanie plików
-na serwer docelowy za pośrednictwem konsoli może stanowić kłopot.
+Strona ma przeznaczenie ogólne, ale jest przeważnie skierowana do
+użytkowników mniej technicznych którzy rozumieją język polski, oraz dla których
+wysłanie plików na serwer docelowy za pośrednictwem konsoli może stanowić
+kłopot.
 
-## Treści prezentowane na stronie.
+## Treści prezentowane na stronie
 
 <!--
 Ściśle powiązane z kategorią strony: np. prowadząc blog treści zamieszczamy
@@ -125,7 +130,46 @@ Na stronie się znajdą:
     trudniej odgadnąć, wówczas gdy domyślnie adres to tak naprawdę kolejny ID który
     używa szerszego alfabetu niż 0-9
 
-## Responsywność strony
+
+## Mapa strony
+
+<!--
+(Przedstawienie struktury menu i podstron) – można użyć schematu graficznego lub
+listy hierarchicznej.
+-->
+
+Strona internetowa będzie się składała z następujących podstron:
+
+- `/` --- korzeń, zawiera okno wysyłania plików, informacje o dostawcy,
+  możliwość ustawienia czasu ekspiracji oraz opcji «secret»
+- `/browse` --- przegląd wysłanych plików,
+- `/FAQ` --- najczęściej zadawane pytania, pozwoliliśmy sobie trochę humoru,
+- `/credits` --- podziękowania,
+- `/privacy-policy` --- polityka prywatności.
+
+## Zawartość strony głównej
+
+<!--
+(wykaz elementów budowy strony głównej) – wypunktować wszystkie elementy strony
+głównej, np.: nagłówek z logo i menu, baner lub slider, sekcje z treściami
+(aktualności, oferta, galeria), formularz kontaktowy, stopka z danymi firmy i
+odnośnikami do mediów społecznościowych. Wskazać tagi, które będą wykorzystane
+do oznaczenia poszczególnych treści.
+-->
+
+Strona główna będzie zawierała okno wysłania, które swoją drogą zawiera trzy widgety:
+
+- widget zawierające załączone pliki gotowe do wysłanie razem z przyciskami
+  dodania kolejnych plików oraz bezpośrednio wysłania. Każdy załączony plik
+  także ma możliwość nadpisywania czasu wygaśnięcia (`div`,
+  `input type="checkbox`, `input type="file"`, `input type="date"`)
+- widget z ustawieniami wysłania: wybór dostawcy, data wygaśnięcia, ustawienie
+  «secret» (`div`, `input type="checkbox`, `input type="date"`, `select`)
+- widget z informacjami o wybranym dostawcy (`div`, `ul`, `a`)
+
+Także strona zawiera menu z linkami do poszczególnych podstron.
+
+## Responsywność
 
 <!--
 (W jakim zakresie strona będzie responsywna, na jakich urządzeniach będzie
@@ -141,25 +185,12 @@ Na urządzeniu typu komputer nie zmienia wyglądu w zależności od rozdzielczo�
 natomiast w przypadku telefonów zmienia układ strony w menu wysłania i
 przeglądania wysłanych plików w celu poprawienia UX.
 
-Między innymi:
 
-- Menu nawigacyjne dzieli się na kilka wierszy
-- 2 panele pozwalające na ustawienie opcji wysłania oraz panel informacji o
-  stronie mieszczą się jeden pod innym, zamiast pozycjonowania obok siebie
-  (schemat poniżej)
-- Tabela wysłanych plików uzyskuje własność overflow, co pozwala ją przewijać
-  nie przewijając całej strony
-- Checkboxy stają się większe na urządzeniach mobilnych
-
-![Transformacja strony wysłania](assets/main-page-responsivity.png)
-
-![Transformacja strony przeglądania plików](assets/browse-page-filled.png)
-
-## Wersje językowe strony
+## Wersje językowe
 
 Strona jest dostępna tylko i wyłącznie w języku polskim.
 
-## Logo strony
+## Logo
 
 <!--
 (Czy już istnieje, czy będzie tworzone na potrzeby strony?).
@@ -167,7 +198,7 @@ Strona jest dostępna tylko i wyłącznie w języku polskim.
 
 Logo własnoręcznie na potrzeby projektu.
 
-![Logo](./assets/0x0-logo.png)
+![Logo](./assets/0x0-logo.png){width=50%}
 
 ## Specyfikacja techniczna
 
@@ -201,45 +232,88 @@ Zewnętrzne API wykorzystane w projekcie:
   każdemu uruchomić własną kopię. Również ma kilka zewnętrznych instancji
   uruchomionych przez osób trzecich.
 
-# Mapa strony
 
-<!--
-(Przedstawienie struktury menu i podstron) – można użyć schematu graficznego lub
-listy hierarchicznej.
+# Wykonanie strony internetowej
+<!-- Należy wykazać, że spełnione są następujące  kryteria oceny:  
+         TODO: 
+    [x] a) Tematyka (zgodność z ustaleniami)  
+    [x] b) Strona zawiera minimum 5 podstron  
+    [x] c) Strona zawiera działające menu nawigacyjne  
+    [x] d) Wskazać jaką grafikę zawiera stroną – czy jest powiązana z jej tematyką, czy jest wykonana samodzielnie czy też  
+       pobrana z Internetu (na jakiej licencji? Z jakiego źródła?)  
+    [ ] e) Pokazać działający formularz/wykorzystanie JavaScript (maximum przy autorskim skrypcie) – pokazać podstronę  
+       pokazującą formularz/JavaScript  
+    [ ] f) Pokazać wykorzystanie HTML API.  
+    [x] g) Responsywność strony – pokazać wygląd strony na różnych urządzeniach  
+    [x] h) Wykazać troskę o User Experience  
+    [ ] i) Pokazać poprawne wykorzystanie znaczników (np. oznaczanie sekcji, cytatów) – dodać kod jednej z podstron.  
+    [ ] j Zgodność strony ze standardami W3C – print screen z walidatora  
+    [x] k) Miejsce opublikowania strony w Internecie 
 -->
+## Struktura strony
 
-Strona internetowa będzie się składała z następujących podstron:
+![](./assets/main_page_empty.pdf){width=48%}\ ![](./assets/main_page_files.pdf){width=48%}
+\begin{figure}[!h]
+\caption{Strona główna}
+\end{figure}
 
-- `/` --- korzeń, zawiera okno wysyłania plików, informacje o dostawcy,
-  możliwość ustawienia czasu ekspiracji oraz opcji «secret»
-- `/browse` --- przegląd wysłanych plików,
-- `/FAQ` --- najczęściej zadawane pytania, pozwoliliśmy sobie trochę humoru,
-- `/credits` --- podziękowania,
-- `/privacy-policy` --- polityka prywatności.
+![Strona przeglądania plików](./assets/view.pdf)
 
-# Zawartość strony głównej
+Tematyka strony jest zgodna z założeniami projektu: została stworzona strona do
+wysyłania plików za pośrednictwem trzech dostawców na wybór.
 
-<!--
-(wykaz elementów budowy strony głównej) – wypunktować wszystkie elementy strony
-głównej, np.: nagłówek z logo i menu, baner lub slider, sekcje z treściami
-(aktualności, oferta, galeria), formularz kontaktowy, stopka z danymi firmy i
-odnośnikami do mediów społecznościowych. Wskazać tagi, które będą wykorzystane
-do oznaczenia poszczególnych treści.
--->
+Strona zgodnie z ustaleniami zawiera 5 podstron:
 
-Strona główna zawiera okno wysłania, które swoją drogą zawiera trzy widgety:
+- Wysyłanie plików
+- Przegląd wysłanych plików
+- Często zadawane pytania
+- Podziękowania
+- Polityka prywatności
 
-- widget zawierające załączone pliki gotowe do wysłanie razem z przyciskami
-  dodania kolejnych plików oraz bezpośrednio wysłania. Każdy załączony plik
-  także ma możliwość nadpisywania czasu wygaśnięcia (`div`,
-  `input type="checkbox`, `input type="file"`, `input type="date"`)
-- widget z ustawieniami wysłania: wybór dostawcy, data wygaśnięcia, ustawienie
-  «secret» (`div`, `input type="checkbox`, `input type="date"`, `select`)
-- widget z informacjami o wybranym dostawcy (`div`, `ul`, `a`)
+Struktura tych podstron, widgety na nich umieszczone są zgodne z założeniami.
 
-Także strona zawiera menu z linkami do poszczególnych podstron.
+Wszystkie podstrony są dostępne za pomocą menu nawigacyjnego umieszczonego w
+pasku górnym strony. Także w pasku tym przy przycisku "Wyślij" umieszczona jest
+jedyna grafika użyta na stronie --- logo naszego autorstwa.
 
-# Inne uwagi dotyczące wykonania strony
+## Responsywność
+
+Strona jest dostosowana do urządzeń desktopowych oraz urządzeń typu touch. W
+stosunku do wersji komputerowej, w wersji na urządzenia mobilne są wprowadzone
+między innymi następujące zmiany:
+
+- Menu nawigacyjne dzieli się na kilka wierszy
+- Dwa panele pozwalające na ustawienie opcji wysłania oraz panel informacji o
+  stronie mieszczą się jeden pod innym, zamiast pozycjonowania obok siebie
+  (schemat poniżej)
+- Tabela wysłanych plików uzyskuje własność overflow, co pozwala ją przewijać
+  nie przewijając całej strony
+- Checkboxy stają się większe na urządzeniach mobilnych
+
+![Transformacja strony wysłania](assets/main-page-responsivity.png)
+
+![Transformacja strony przeglądania plików](assets/browse-page-filled.png)
+
+## Troska o User Experience
+
+Responsywność, czyli dostosowanie do różnych typów urządzeń jest częścią
+poprawienia User Experience. Także korzystanie ze strony jest przyjemniejsze
+dzięki temu, że:
+
+- Przyciski są umieszczone w sposób intuicyjny dla użytkownika
+- Funkcjonalność jest logicznie podzielona na podstrony 
+- Informacje o dostawcach są dostępne od razu na stronie --- użytkownik nie musi
+tego oddzielnie szukać
+- Tekst i przyciski mają optymalny kontrast
+
+## Miejsce opublikowania
+
+Strona została umieszczona na domenie której jesteśmy właścicielami. Do
+utrzymania strony skorzystano z hostinga [HETZNER](https://www.hetzner.com/).
+
+Link do strony: <https://null.crii.xyz>
+
+## Inne uwagi dotyczące wykonania strony
 
 <!--
 (np. plan testów funkcjonalności, responsywności, wydajności, SEO, dostępności;
@@ -336,7 +410,12 @@ katalogu).
 
   > - Przetłumacz wszystkie treści na stronie które nie są obecnie w polskim na polski. Nie tłumacz nazw w kodzie czy komentarzy, tylko treści które widzi użytkownik.
 
-# Publikowanie
 
-Strona została umieszczona na domenie której jesteśmy właścicielami. Do
-utrzymania strony skorzystano z hostinga [HETZNER](https://www.hetzner.com/).
+# Wnioski
+
+W przyszłości planujemy ciągle aktualizować stronę. Aktualizacje te będą dotyczyły:
+
+- Polepszenie designu, dostosowanie stylu do ówcześnie aktualnego
+- Lepszy handling błędów zwracanych przez serwer
+- Dodanie funkcjonalności skrócenia linków --- to też jest usługa świadczona
+przez tych samych dostawców do których wysyłamy pliki
