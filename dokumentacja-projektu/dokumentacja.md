@@ -12,13 +12,13 @@ author:
   - Andrii Yanishevskyi
 abstract: |
   Przygotowane przez studentów III roku kierunku Inżynieria i Analiza Danych
-   
+
   Link do strony: <https://null.crii.xyz>
 ---
 
 <!-- nie usuwać starego sprawozdania, dodać nowe -->
 
-<!-- 
+<!--
 - [x] powinna być strona tytulowa
 - [x] tytul powinien brzmieć «dokumentacja strony ...»
 - [x] celem projektu jest stworzenie strony ... z wykorzystaniem technologii
@@ -234,21 +234,21 @@ Zewnętrzne API wykorzystane w projekcie:
 
 
 # Wykonanie strony internetowej
-<!-- Należy wykazać, że spełnione są następujące  kryteria oceny:  
-         TODO: 
-    [x] a) Tematyka (zgodność z ustaleniami)  
-    [x] b) Strona zawiera minimum 5 podstron  
-    [x] c) Strona zawiera działające menu nawigacyjne  
-    [x] d) Wskazać jaką grafikę zawiera stroną – czy jest powiązana z jej tematyką, czy jest wykonana samodzielnie czy też  
-       pobrana z Internetu (na jakiej licencji? Z jakiego źródła?)  
-    [ ] e) Pokazać działający formularz/wykorzystanie JavaScript (maximum przy autorskim skrypcie) – pokazać podstronę  
-       pokazującą formularz/JavaScript  
-    [ ] f) Pokazać wykorzystanie HTML API.  
-    [x] g) Responsywność strony – pokazać wygląd strony na różnych urządzeniach  
-    [x] h) Wykazać troskę o User Experience  
-    [ ] i) Pokazać poprawne wykorzystanie znaczników (np. oznaczanie sekcji, cytatów) – dodać kod jednej z podstron.  
-    [ ] j Zgodność strony ze standardami W3C – print screen z walidatora  
-    [x] k) Miejsce opublikowania strony w Internecie 
+<!-- Należy wykazać, że spełnione są następujące  kryteria oceny:
+         TODO:
+    [x] a) Tematyka (zgodność z ustaleniami)
+    [x] b) Strona zawiera minimum 5 podstron
+    [x] c) Strona zawiera działające menu nawigacyjne
+    [x] d) Wskazać jaką grafikę zawiera stroną – czy jest powiązana z jej tematyką, czy jest wykonana samodzielnie czy też
+       pobrana z Internetu (na jakiej licencji? Z jakiego źródła?)
+    [x] e) Pokazać działający formularz/wykorzystanie JavaScript (maximum przy autorskim skrypcie) – pokazać podstronę
+       pokazującą formularz/JavaScript
+    [x] f) Pokazać wykorzystanie HTML API.
+    [x] g) Responsywność strony – pokazać wygląd strony na różnych urządzeniach
+    [x] h) Wykazać troskę o User Experience
+    [x] i) Pokazać poprawne wykorzystanie znaczników (np. oznaczanie sekcji, cytatów) – dodać kod jednej z podstron.
+    [x] j) Zgodność strony ze standardami W3C – print screen z walidatora
+    [x] k) Miejsce opublikowania strony w Internecie
 -->
 ## Struktura strony
 
@@ -301,7 +301,7 @@ poprawienia User Experience. Także korzystanie ze strony jest przyjemniejsze
 dzięki temu, że:
 
 - Przyciski są umieszczone w sposób intuicyjny dla użytkownika
-- Funkcjonalność jest logicznie podzielona na podstrony 
+- Funkcjonalność jest logicznie podzielona na podstrony
 - Informacje o dostawcach są dostępne od razu na stronie --- użytkownik nie musi
 tego oddzielnie szukać
 - Tekst i przyciski mają optymalny kontrast
@@ -328,8 +328,8 @@ wysyłkę plików do 0x0) tylko autoryzowanym stronom.
 
 Zatem jedyną rolę, którą pełni serwer jest przekazanie plików do dostawcy.
 
-Przykład funkcji po stronie serwera odpowiedzialnej za wysłanie plików do
-dostawcy:
+Przykład autorskiej funkcji po stronie serwera odpowiedzialnej za wysłanie
+plików do dostawcy:
 
 ```typescript
 async function uploadFile(
@@ -370,6 +370,150 @@ async function uploadFile(
   }
 }
 ```
+
+W funkcji powyżej tworzymy sztuczny formularz, który zostanie wysłany do
+dostawcy. Jesteśmy uczciwi, więc identyfikujemy się unikalnie za pomocą nagłówku
+User-Agent, który, jak można zauważyć, zaczyna się od "curl/", co wynika z
+faktu, że w przypadku wysłania do <https://0x0.st> nagłówek koniecznie musi
+zaczynać się od `curl/`, bo inaczej serwer nie przyjmie pliku. To, swoją drogą,
+wynika z tego, że przy wykorzystaniu `curl`{.bash} do wysłania plików,
+`curl`{.bash} ustawia ten nagłówek na `curl/$WERSJA`.
+
+Dodamy, że strona sama w sobie używa dokładnie jeden formularz (też sztuczny),
+który tworzymy ręcznie (nie istnieje w drzewie DOM) podczas wysłania plików na
+nasz serwer:
+```svelte
+Cała definicja w src/routes/+page.svelte:34
+async function upload_files(): Promise<Error | void> {
+  let form = new FormData();
+
+  form.set("config", JSON.stringify(uploadConfig));
+  // ...
+}
+```
+
+Ta funkcja to miejsce zebrania się wszystkich plików, konfiguracji ogólnej i
+konfiguracji szczególnej (dla oddzielnych plików). Konfiguracja, swoją drogą, jest
+stworzona za pomocą znaczników `<input>`{.html} typów `"checkbox"` i `"date"`.
+Same pliki dołączane za pomocą ukrytego znaczniku `<input type="file">`, którego
+metodę `.click()` używamy przy kliknięciu na widget dodania plików.
+
+### Poprawność wykorzystanych znaczników
+
+Poprawność wykorzystanych znaczników była sprawdzana na bieżąco za pomocą
+serwera językowego svelte (zobacz
+[svelte-language-tools](https://github.com/sveltejs/language-tools)), który
+pomocnie wskazywał na każdy niepoprawnie użyty wskaźnik, bądź na dolegliwości w
+pisanym kodzie TypeScript. Wskutek tego walidacja za pomocą narzędzi W3C została
+świadomie pominięta.
+
+### Wykorzystanie HTML API
+
+Przykładem użycia HTML API jest dodanie handlera do elementu checkbox:
+
+```svelte
+<!-- plik src/lib/components/UploadCandidateWidget.svelte:64 -->
+<input
+type="checkbox"
+checked={candidate.overrides.secret ?? false}
+onchange={(event) =>
+  onOverrideSecretChange(
+      (event.currentTarget as HTMLInputElement).checked,
+      )}
+  />
+```
+
+Ta funkcja nadpisuje ustawienie `secret` dla konkretnego pliku.
+
+### Kod jednej z podstron
+
+Przedstawiamy kod podstrony `/credits`, która nie zawiera dynamicznych treści.
+
+```svelte
+<div class="content">
+  <h2>Ludzie</h2>
+  <ul class="hearts">
+    <li>
+      <a href="https://git.0x0.st/mia">Mia</a> za stworzenie 0x0 i hostowanie go
+      dla wszystkich
+    </li>
+    <li>
+      Operatorzy
+      <a href="https://boop.icu">boop.icu</a> oraz
+      <a href="https://0.vern.cc">0.vern.cc</a>
+    </li>
+    <li>Zespół Svelte za framework</li>
+  </ul>
+
+  <h2>Użyte narzędzia</h2>
+  <ul class="tools">
+    <li>
+      <a href="https://wiki.nixos.org/wiki/Nix_(package_manager)">nix</a>
+      (menedżer pakietów), <a href="https://nixos.org/">NixOS</a> (system
+      operacyjny),
+      <a href="https://github.com/NixOS/nixpkgs/issues">nixpkgs</a> (kolekcja pakietów)
+    </li>
+    <li>
+      <a href="https://svelte.dev/">Svelte</a> oraz
+      <a href="https://svelte.dev/docs/kit/introduction">SvelteKit</a>
+    </li>
+    <li>Hosting plików <a href="https://git.0x0.st/mia/0x0">0x0</a></li>
+    <li><a href="https://www.typescriptlang.org/">TypeScript</a></li>
+    <li><a href="https://sass-lang.com/documentation/syntax/">SCSS</a></li>
+  </ul>
+</div>
+
+<style lang="scss">
+  ul.hearts {
+    list-style: none;
+    & li::marker {
+      content: "♥ ";
+    }
+  }
+
+  ul.tools {
+    list-style: none;
+    & li::marker {
+      content: "🔨 ";
+    }
+  }
+
+  h2 {
+    padding: 1rem;
+    border-radius: 100pt;
+    display: inline-block;
+    background: linear-gradient(135deg, #ebf3fe 0%, #ffffff 100%);
+  }
+
+  .content {
+    max-width: 64ch;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+</style>
+```
+
+### Nix
+
+Nix odgrywa kluczową rolę przy testowaniu, uruchamiania i bezpiecznej publikacji
+strony. Plikiem głównym jest `flake.nix`, który zbiera wszystkie *wyjścia* (ang.
+outputs) z naszego projektu (`flake.nix` można w pewnym sensie traktować jako
+korzeń projektu). Jednym z wyjść jest sam serwer (`packages.null-wrapper`),
+który możemy zbudować wykonując polecenie `nix build` w katalogu projektu.
+Drugim ważnym wyjściem jest `apps.run-vm`, które przy uruchomieniu uruchamiania
+wirtualną maszynę, która zawiera minimalny zestaw wymaganych rzeczy: serwer SSH
+(żebyśmy mogli dostać się wewnątrz maszyny wirtualnej), oraz nasz serwer
+zawinięty w serwis systemd, całą konfigurację którego można znaleźć w
+`module.nix`. Użyto kilka opcji *utwardzających* (ang. hardening) konfigurację
+serwisu, mianowicie `User`, `Group` pozwalające uruchomić serwer jako użytkownik
+bez uprzywilejowań, `PrivateDevices`, `ProtectHome`, `ProtectKernelTunables`,
+`ProtectProc`, który ukrywa pewne pliki i katalogi, takie jak `/dev`, `/home`,
+`/proc`, `/sys`.
+
+Ostatecznie dołączono tę konfigurację do systemu na serwerze, zaktualizowano nginx i
+certyfikat SSL (można zobaczyć w
+[`/nix/sys/hez/default.nix`](https://gitlab.com/repetitivesin/dotfiles/-/blob/2dc40a82f51d19bb96793c763f15abaa80ac1104/nix/sys/hez/default.nix#L94)).
+
 
 ## Wykorzystanie AI do stworzenia strony
 
