@@ -196,7 +196,7 @@ Strona jest dostępna tylko i wyłącznie w języku polskim.
 (Czy już istnieje, czy będzie tworzone na potrzeby strony?).
 -->
 
-Logo własnoręcznie na potrzeby projektu.
+Logo stworzone własnoręcznie na potrzeby projektu.
 
 ![Logo](./assets/0x0-logo.png){width=50%}
 
@@ -382,8 +382,9 @@ wynika z tego, że przy wykorzystaniu `curl`{.bash} do wysłania plików,
 Dodamy, że strona sama w sobie używa dokładnie jeden formularz (też sztuczny),
 który tworzymy ręcznie (nie istnieje w drzewie DOM) podczas wysłania plików na
 nasz serwer:
-```svelte
-Cała definicja w src/routes/+page.svelte:34
+```javascript
+// Cała definicja w src/routes/+page.svelte:34
+
 async function upload_files(): Promise<Error | void> {
   let form = new FormData();
 
@@ -395,8 +396,8 @@ async function upload_files(): Promise<Error | void> {
 Ta funkcja to miejsce zebrania się wszystkich plików, konfiguracji ogólnej i
 konfiguracji szczególnej (dla oddzielnych plików). Konfiguracja, swoją drogą, jest
 stworzona za pomocą znaczników `<input>`{.html} typów `"checkbox"` i `"date"`.
-Same pliki dołączane za pomocą ukrytego znaczniku `<input type="file">`, którego
-metodę `.click()` używamy przy kliknięciu na widget dodania plików.
+Same pliki dołączane za pomocą ukrytego znaczniku `<input type="file">`{.html}, którego
+metodę `.click()`{.javascript} używamy przy kliknięciu na widget dodania plików.
 
 ### Poprawność wykorzystanych znaczników
 
@@ -411,7 +412,7 @@ pisanym kodzie TypeScript. Wskutek tego walidacja za pomocą narzędzi W3C zosta
 
 Przykładem użycia HTML API jest dodanie handlera do elementu checkbox:
 
-```svelte
+```javascript
 <!-- plik src/lib/components/UploadCandidateWidget.svelte:64 -->
 <input
 type="checkbox"
@@ -429,7 +430,7 @@ Ta funkcja nadpisuje ustawienie `secret` dla konkretnego pliku.
 
 Przedstawiamy kod podstrony `/credits`, która nie zawiera dynamicznych treści.
 
-```svelte
+```html
 <div class="content">
   <h2>Ludzie</h2>
   <ul class="hearts">
