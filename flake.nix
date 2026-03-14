@@ -13,7 +13,9 @@
           version = "0.0.1";
           src = ./.;
 
-          npmDepsHash = "sha256-YGEph+rfJbkKPjvrab/eFDbrbEC3OdjHJEDK+m2IqAc=";
+          # NOTE: updating dependencies requires running `npm update`, since bun
+          # uses it's own lock file ignored by the buildNpmPackage
+          npmDepsHash = "sha256-p/rtnqZs8gPUohmwDPsJxzn64qh9uPp4TSwoo1VhJ7g=";
           # npmDepsHash = pkgs.lib.fakeHash;
           makeCacheWritable = true;
           # npmFlags = [ "--legacy-peer-deps" "--loglevel=verbose" ];
