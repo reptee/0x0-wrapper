@@ -12,7 +12,7 @@
     port = lib.mkOption {
       type = lib.types.int;
       description = ''
-        Which port to bound the server to.
+        Which port to bind the server to.
       '';
     };
 

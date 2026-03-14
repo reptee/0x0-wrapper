@@ -1,38 +1,88 @@
-# sv
+---
+title: crosspointer
+lang: pl
+---
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Dana aplikacja służy do udostępnienia plików publicznie z dowolnego komputera z
+dostępem do internetu. Aplikacja pozwala na wysyłanie i zarządzanie wysłanymi
+plikami, przy czym sama aplikacja nie przechowuje żadnych informacji, a służy
+jedyni pośrednikiem ze względu na zabezpieczenia CORS we współczesnych
+przeglądarkach.
 
-## Creating a project
+Demo: <https://null.crii.xyz/>
 
-If you're seeing this, you've probably already done this step. Congrats!
+Szczegółowy opis funkcjonalności można znaleźć w pliku dokumentacji
+[dokumentacja.md](/dokumentacja-projektu/dokumentacja.md).
 
-```sh
-# create a new project in the current directory
-npx sv create
+### Hostowanie własnej instancji
 
-# create a new project in my-app
-npx sv create my-app
+Projekt można uruchomić w sposób klasyczny: pobierają i uruchamiając serwer za
+pomocą `npm run build`, jednak jeśli używasz NixOS, można uruchomić serwer dodając
+kilka linijek konfiguracji nix. Także można uruchomić aplikację za pomocą QEMU
+bez zmian konfiguracji systemu.
+
+#### Uruchomienie w maszynie wirtualnej
+
+To podejście również wymaga Nix, jak i ustawienie systemu do obsługi maszyn
+wirtualnych QEMU (zobacz <https://wiki.nixos.org/wiki/QEMU>).
+
+W celu uruchomienia maszyny wirtualnej z aplikacją, należy użyć
+
+```bash
+nix run github:reptee/0x0-wrapper#run-vm
 ```
 
-## Developing
+Co od ręki pobierze i uruchomi aplikację, dając dostęp do portu SSH 2221 oraz
+samej aplikacji na porcie 9999. Żeby zamknąć maszynę, należy kliknąć `Ctrl-A X`.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+#### Moduł nix
 
-```sh
-npm run dev
+Przykładowa konfiguracja uruchomiająca aplikację, nginx wraz z automatyczną
+obsługą certyfikatów SSL:
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```nix
+{
+  services.null-wrapper = {
+    enable = true;
+    port = 3081; # Uruchamiamy serwer na porcie 3081, ale tylko lokalnie
+    host = "127.0.0.1";
+    origin = null;
+    group = "null-wrapper";
+    user = "null-wrapper";
+  };
+
+  ## Udostępnienie serwera innym:
+
+  # Obsługa TLS
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "your.email@example.com";
+  };
+
+  # Korzystamy z nginx jako proxy dla naszej aplikacji.
+  services.nginx = {
+    enable = true;
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
+    virtualHosts."your.host.example.com" = {
+      # Zwiększamy maksymalny rozmiar, ponieważ klient może łącznie wysłać kilka
+      # plików które ważą więcej niż ograniczenie jednostkowe (tzn. 256MiB lub
+      # 512MiB)
+      extraConfig = ''
+        client_max_body_size 2G;
+      '';
+      # Obsługa TLS
+      enableACME = true;
+      addSSL = true;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:3081";
+      };
+    };
+  };
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
+}
 ```
 
-## Building
+### TODO
 
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+- Opcja wyświetlenia kodu QR w przeglądzie plików
